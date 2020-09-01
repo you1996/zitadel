@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tmplMfaVerify = "mfaverify"
+	tmplMfaVerify = "MfaVerify"
 )
 
 type mfaVerifyFormData struct {
@@ -35,11 +35,7 @@ func (l *Login) handleMfaVerify(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderMfaVerify(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, verificationStep *model.MfaVerificationStep, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
-	data := l.getUserData(r, authReq, "Mfa Verify", errType, errMessage)
+	data := l.getUserData(r, authReq, tmplMfaVerify, err)
 	if verificationStep != nil {
 		data.MfaProviders = verificationStep.MfaProviders
 		data.SelectedMfaProvider = verificationStep.MfaProviders[0]

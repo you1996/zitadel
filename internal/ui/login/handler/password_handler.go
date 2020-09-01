@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tmplPassword = "password"
+	tmplPassword = "Password"
 )
 
 type passwordFormData struct {
@@ -16,11 +16,7 @@ type passwordFormData struct {
 }
 
 func (l *Login) renderPassword(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
-	data := l.getUserData(r, authReq, "Password", errType, errMessage)
+	data := l.getUserData(r, authReq, tmplPassword, err)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplPassword], data, nil)
 }
 

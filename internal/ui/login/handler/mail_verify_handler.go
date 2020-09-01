@@ -10,8 +10,8 @@ const (
 	queryCode   = "code"
 	queryUserID = "userID"
 
-	tmplMailVerification = "mail_verification"
-	tmplMailVerified     = "mail_verified"
+	tmplMailVerification = "EmailVerification"
+	tmplMailVerified     = "EmailVerificationDone"
 )
 
 type mailVerificationFormData struct {
@@ -70,15 +70,11 @@ func (l *Login) checkMailCode(w http.ResponseWriter, r *http.Request, authReq *m
 }
 
 func (l *Login) renderMailVerification(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, userID string, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
 	if userID == "" {
 		userID = authReq.UserID
 	}
 	data := mailVerificationData{
-		baseData:    l.getBaseData(r, authReq, "Mail Verification", errType, errMessage),
+		baseData:    l.getBaseData(r, authReq, tmplMailVerification, err),
 		UserID:      userID,
 		profileData: l.getProfileData(authReq),
 	}
@@ -87,7 +83,7 @@ func (l *Login) renderMailVerification(w http.ResponseWriter, r *http.Request, a
 
 func (l *Login) renderMailVerified(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
 	data := mailVerificationData{
-		baseData:    l.getBaseData(r, authReq, "Mail Verified", "", ""),
+		baseData:    l.getBaseData(r, authReq, tmplMailVerified, nil),
 		profileData: l.getProfileData(authReq),
 	}
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplMailVerified], data, nil)

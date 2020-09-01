@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	tmplPasswordResetDone = "passwordresetdone"
+	tmplPasswordResetDone = "PasswordResetDone"
 )
 
 func (l *Login) handlePasswordReset(w http.ResponseWriter, r *http.Request) {
@@ -21,10 +21,6 @@ func (l *Login) handlePasswordReset(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderPasswordResetDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
-	data := l.getUserData(r, authReq, "Password Reset Done", errType, errMessage)
+	data := l.getUserData(r, authReq, tmplPasswordResetDone, err)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplPasswordResetDone], data, nil)
 }

@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	tmplMfaInitVerify = "mfainitverify"
+	tmplMfaInitVerify = "MfaInitVerify"
 )
 
 type mfaInitVerifyData struct {
@@ -63,11 +63,7 @@ func (l *Login) handleOtpVerify(w http.ResponseWriter, r *http.Request, authReq 
 }
 
 func (l *Login) renderMfaInitVerify(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *mfaVerifyData, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
-	data.baseData = l.getBaseData(r, authReq, "Mfa Init Verify", errType, errMessage)
+	data.baseData = l.getBaseData(r, authReq, tmplMfaInitVerify, err)
 	data.profileData = l.getProfileData(authReq)
 	if data.MfaType == model.MfaTypeOTP {
 		code, err := generateQrCode(data.otpData.Url)

@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	tmplChangePassword     = "changepassword"
-	tmplChangePasswordDone = "changepassworddone"
+	tmplChangePassword     = "PasswordChange"
+	tmplChangePasswordDone = "PasswordChangeDone"
 )
 
 type changePasswordData struct {
@@ -33,12 +33,8 @@ func (l *Login) handleChangePassword(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderChangePassword(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
 	data := passwordData{
-		baseData:    l.getBaseData(r, authReq, "Change Password", errType, errMessage),
+		baseData:    l.getBaseData(r, authReq, "PasswordChange.Title", err),
 		profileData: l.getProfileData(authReq),
 	}
 	policy, description, _ := l.getPasswordComplexityPolicy(r, authReq.UserOrgID)
@@ -62,7 +58,6 @@ func (l *Login) renderChangePassword(w http.ResponseWriter, r *http.Request, aut
 }
 
 func (l *Login) renderChangePasswordDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
-	var errType, errMessage string
-	data := l.getUserData(r, authReq, "Password Change Done", errType, errMessage)
+	data := l.getUserData(r, authReq, tmplChangePasswordDone, nil)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplChangePasswordDone], data, nil)
 }

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tmplUserSelection = "userselection"
+	tmplUserSelection = "UserSelection"
 )
 
 type userSelectionFormData struct {
@@ -17,7 +17,7 @@ type userSelectionFormData struct {
 
 func (l *Login) renderUserSelection(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, selectionData *model.SelectUserStep) {
 	data := userSelectionData{
-		baseData: l.getBaseData(r, authReq, "Select User", "", ""),
+		baseData: l.getBaseData(r, authReq, tmplUserSelection, nil),
 		Users:    selectionData.Users,
 	}
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplUserSelection], data, nil)

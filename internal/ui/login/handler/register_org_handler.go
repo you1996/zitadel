@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	tmplRegisterOrg = "registerorg"
+	tmplRegisterOrg = "RegistrationOrg"
 )
 
 type registerOrgFormData struct {
@@ -79,16 +79,12 @@ func (l *Login) handleRegisterOrgCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderRegisterOrg(w http.ResponseWriter, r *http.Request, authRequest *model.AuthRequest, formData *registerOrgFormData, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
 	if formData == nil {
 		formData = new(registerOrgFormData)
 	}
 
 	data := registerOrgData{
-		baseData:            l.getBaseData(r, authRequest, "Register", errType, errMessage),
+		baseData:            l.getBaseData(r, authRequest, tmplRegisterOrg, err),
 		registerOrgFormData: *formData,
 	}
 

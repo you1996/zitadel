@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tmplMfaPrompt = "mfaprompt"
+	tmplMfaPrompt = "MfaPrompt"
 )
 
 type mfaPromptData struct {
@@ -49,12 +49,8 @@ func (l *Login) handleMfaPromptSelection(w http.ResponseWriter, r *http.Request)
 }
 
 func (l *Login) renderMfaPrompt(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, mfaPromptData *model.MfaPromptStep, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
 	data := mfaData{
-		baseData:    l.getBaseData(r, authReq, "Mfa Prompt", errType, errMessage),
+		baseData:    l.getBaseData(r, authReq, tmplMfaPrompt, err),
 		profileData: l.getProfileData(authReq),
 	}
 

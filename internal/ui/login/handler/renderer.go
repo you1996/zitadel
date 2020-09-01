@@ -192,29 +192,25 @@ func (l *Login) chooseNextStep(w http.ResponseWriter, r *http.Request, authReq *
 }
 
 func (l *Login) renderInternalError(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
-	var msg string
-	if err != nil {
-		msg = err.Error()
-	}
-	data := l.getBaseData(r, authReq, "Error", "Internal", msg)
+	data := l.getBaseData(r, authReq, "Error", err)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplError], data, nil)
 }
 
-func (l *Login) getUserData(r *http.Request, authReq *model.AuthRequest, title string, errType, errMessage string) userData {
+func (l *Login) getUserData(r *http.Request, authReq *model.AuthRequest, title string, err error) userData {
 	return userData{
-		baseData:    l.getBaseData(r, authReq, title, errType, errMessage),
+		baseData:    l.getBaseData(r, authReq, title, err),
 		profileData: l.getProfileData(authReq),
 	}
 }
 
-func (l *Login) getBaseData(r *http.Request, authReq *model.AuthRequest, title string, errType, errMessage string) baseData {
+func (l *Login) getBaseData(r *http.Request, authReq *model.AuthRequest, templateName string, err error) baseData {
 	return baseData{
 		errorData: errorData{
-			ErrType:    errType,
-			ErrMessage: errMessage,
+			//ErrType:    errType,
+			ErrMessage: l.getErrorMessage(r, err),
 		},
 		Lang:      l.renderer.Lang(r).String(),
-		Title:     title,
+		Title:     l.renderer.LocalizeFromRequest(r, templateName+".Title", nil),
 		Theme:     l.getTheme(r),
 		ThemeMode: l.getThemeMode(r),
 		AuthReqID: getRequestID(authReq, r),
@@ -235,7 +231,10 @@ func (l *Login) getProfileData(authReq *model.AuthRequest) profileData {
 	}
 }
 
-func (l *Login) getErrorMessage(r *http.Request, err error) (errMsg string) {
+func (l *Login) getErrorMessage(r *http.Request, err error) string {
+	if err == nil {
+		return ""
+	}
 	caosErr := new(caos_errs.CaosError)
 	if errors.As(err, &caosErr) {
 		localized := l.renderer.LocalizeFromRequest(r, caosErr.Message, nil)

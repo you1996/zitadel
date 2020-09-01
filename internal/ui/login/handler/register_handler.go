@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	tmplRegister          = "register"
+	tmplRegister          = "Register"
 	orgProjectCreatorRole = "ORG_PROJECT_CREATOR"
 )
 
@@ -84,10 +84,6 @@ func (l *Login) handleRegisterCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderRegister(w http.ResponseWriter, r *http.Request, authRequest *model.AuthRequest, formData *registerFormData, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
 	if formData == nil {
 		formData = new(registerFormData)
 	}
@@ -96,7 +92,7 @@ func (l *Login) renderRegister(w http.ResponseWriter, r *http.Request, authReque
 	}
 
 	data := registerData{
-		baseData:         l.getBaseData(r, authRequest, "Register", errType, errMessage),
+		baseData:         l.getBaseData(r, authRequest, tmplRegister, err),
 		registerFormData: *formData,
 	}
 	iam, _ := l.authRepo.GetIAM(r.Context())

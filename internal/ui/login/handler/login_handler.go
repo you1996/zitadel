@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tmplLogin = "login"
+	tmplLogin = "Login"
 )
 
 type loginData struct {
@@ -59,10 +59,6 @@ func (l *Login) handleLoginNameCheck(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderLogin(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
-	data := l.getUserData(r, authReq, "Login", errType, errMessage)
+	data := l.getUserData(r, authReq, tmplLogin, err)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplLogin], data, nil)
 }

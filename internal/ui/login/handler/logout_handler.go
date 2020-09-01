@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	tmplLogoutDone = "logoutdone"
+	tmplLogoutDone = "LogoutDone"
 )
 
 func (l *Login) handleLogoutDone(w http.ResponseWriter, r *http.Request) {
@@ -13,6 +13,6 @@ func (l *Login) handleLogoutDone(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderLogoutDone(w http.ResponseWriter, r *http.Request) {
-	data := l.getUserData(r, nil, "Logout Done", "", "")
+	data := l.getUserData(r, nil, tmplLogoutDone, nil)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplLogoutDone], data, nil)
 }

@@ -11,8 +11,8 @@ const (
 	queryInitPWCode   = "code"
 	queryInitPWUserID = "userID"
 
-	tmplInitPassword     = "initpassword"
-	tmplInitPasswordDone = "initpassworddone"
+	tmplInitPassword     = "InitPassword"
+	tmplInitPasswordDone = "InitPasswordDone"
 )
 
 type initPasswordFormData struct {
@@ -85,16 +85,12 @@ func (l *Login) resendPasswordSet(w http.ResponseWriter, r *http.Request, authRe
 }
 
 func (l *Login) renderInitPassword(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, userID, code string, err error) {
-	var errType, errMessage string
-	if err != nil {
-		errMessage = l.getErrorMessage(r, err)
-	}
 	if userID == "" && authReq != nil {
 		userID = authReq.UserID
 	}
 
 	data := initPasswordData{
-		baseData:    l.getBaseData(r, authReq, "Init Password", errType, errMessage),
+		baseData:    l.getBaseData(r, authReq, tmplInitPassword, err),
 		profileData: l.getProfileData(authReq),
 		UserID:      userID,
 		Code:        code,
@@ -120,6 +116,6 @@ func (l *Login) renderInitPassword(w http.ResponseWriter, r *http.Request, authR
 }
 
 func (l *Login) renderInitPasswordDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
-	data := l.getUserData(r, authReq, "Password Init Done", "", "")
+	data := l.getUserData(r, authReq, tmplInitPassword, nil)
 	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplInitPasswordDone], data, nil)
 }
