@@ -11,8 +11,8 @@ const (
 	queryInitPWCode   = "code"
 	queryInitPWUserID = "userID"
 
-	tmplInitPassword     = "InitPassword"
-	tmplInitPasswordDone = "InitPasswordDone"
+	tmplPasswordInit     = "PasswordInit"
+	tmplPasswordInitDone = "PasswordInitDone"
 )
 
 type initPasswordFormData struct {
@@ -36,13 +36,13 @@ type initPasswordData struct {
 	HasSymbol                 string
 }
 
-func (l *Login) handleInitPassword(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handlePasswordInit(w http.ResponseWriter, r *http.Request) {
 	userID := r.FormValue(queryInitPWUserID)
 	code := r.FormValue(queryInitPWCode)
-	l.renderInitPassword(w, r, nil, userID, code, nil)
+	l.renderPasswordInit(w, r, nil, userID, code, nil)
 }
 
-func (l *Login) handleInitPasswordCheck(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handlePasswordInitCheck(w http.ResponseWriter, r *http.Request) {
 	data := new(initPasswordFormData)
 	authReq, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
@@ -60,7 +60,7 @@ func (l *Login) handleInitPasswordCheck(w http.ResponseWriter, r *http.Request) 
 func (l *Login) checkPWCode(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *initPasswordFormData, err error) {
 	if data.Password != data.PasswordConfirm {
 		err := errors.ThrowInvalidArgument(nil, "VIEW-KaGue", "Errors.User.Password.ConfirmationWrong")
-		l.renderInitPassword(w, r, authReq, data.UserID, data.Code, err)
+		l.renderPasswordInit(w, r, authReq, data.UserID, data.Code, err)
 		return
 	}
 	userOrg := login
@@ -69,10 +69,10 @@ func (l *Login) checkPWCode(w http.ResponseWriter, r *http.Request, authReq *mod
 	}
 	err = l.authRepo.SetPassword(setContext(r.Context(), userOrg), data.UserID, data.Code, data.Password)
 	if err != nil {
-		l.renderInitPassword(w, r, authReq, data.UserID, "", err)
+		l.renderPasswordInit(w, r, authReq, data.UserID, "", err)
 		return
 	}
-	l.renderInitPasswordDone(w, r, authReq)
+	l.renderPasswordInitDone(w, r, authReq)
 }
 
 func (l *Login) resendPasswordSet(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
@@ -81,16 +81,16 @@ func (l *Login) resendPasswordSet(w http.ResponseWriter, r *http.Request, authRe
 		userOrg = authReq.UserOrgID
 	}
 	err := l.authRepo.RequestPasswordReset(setContext(r.Context(), userOrg), authReq.LoginName)
-	l.renderInitPassword(w, r, authReq, authReq.UserID, "", err)
+	l.renderPasswordInit(w, r, authReq, authReq.UserID, "", err)
 }
 
-func (l *Login) renderInitPassword(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, userID, code string, err error) {
+func (l *Login) renderPasswordInit(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, userID, code string, err error) {
 	if userID == "" && authReq != nil {
 		userID = authReq.UserID
 	}
 
 	data := initPasswordData{
-		baseData:    l.getBaseData(r, authReq, tmplInitPassword, err),
+		baseData:    l.getBaseData(r, authReq, tmplPasswordInit, err),
 		profileData: l.getProfileData(authReq),
 		UserID:      userID,
 		Code:        code,
@@ -112,10 +112,10 @@ func (l *Login) renderInitPassword(w http.ResponseWriter, r *http.Request, authR
 			data.HasNumber = NumberRegex
 		}
 	}
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplInitPassword], data, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplPasswordInit], data, nil)
 }
 
-func (l *Login) renderInitPasswordDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
-	data := l.getUserData(r, authReq, tmplInitPassword, nil)
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplInitPasswordDone], data, nil)
+func (l *Login) renderPasswordInitDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
+	data := l.getUserData(r, authReq, tmplPasswordInit, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplPasswordInitDone], data, nil)
 }

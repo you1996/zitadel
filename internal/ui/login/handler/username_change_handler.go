@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	tmplChangeUsername     = "ChangeUsername"
-	tmplChangeUsernameDone = "ChangeUsernameDone"
+	tmplUsernameChange     = "UsernameChange"
+	tmplUsernameChangeDone = "UsernameChangeDone"
 )
 
 type changeUsernameData struct {
@@ -16,8 +16,8 @@ type changeUsernameData struct {
 }
 
 func (l *Login) renderChangeUsername(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
-	data := l.getUserData(r, authReq, tmplChangeUsername, err)
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplChangeUsername], data, nil)
+	data := l.getUserData(r, authReq, tmplUsernameChange, err)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplUsernameChange], data, nil)
 }
 
 func (l *Login) handleChangeUsername(w http.ResponseWriter, r *http.Request) {
@@ -36,6 +36,6 @@ func (l *Login) handleChangeUsername(w http.ResponseWriter, r *http.Request) {
 }
 
 func (l *Login) renderChangeUsernameDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
-	data := l.getUserData(r, authReq, tmplChangeUsernameDone, nil)
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplChangeUsernameDone], data, nil)
+	data := l.getUserData(r, authReq, tmplUsernameChangeDone, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplUsernameChangeDone], data, nil)
 }

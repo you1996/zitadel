@@ -12,7 +12,7 @@ import (
 )
 
 const (
-	tmplRegisterOrg = "RegistrationOrg"
+	tmplRegistrationOrg = "RegistrationOrg"
 )
 
 type registerOrgFormData struct {
@@ -38,17 +38,17 @@ type registerOrgData struct {
 	IamDomain                 string
 }
 
-func (l *Login) handleRegisterOrg(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handleRegistrationOrg(w http.ResponseWriter, r *http.Request) {
 	data := new(registerOrgFormData)
 	authRequest, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
 		l.renderError(w, r, authRequest, err)
 		return
 	}
-	l.renderRegisterOrg(w, r, authRequest, data, nil)
+	l.renderRegistrationOrg(w, r, authRequest, data, nil)
 }
 
-func (l *Login) handleRegisterOrgCheck(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handleRegistrationOrgCheck(w http.ResponseWriter, r *http.Request) {
 	data := new(registerOrgFormData)
 	authRequest, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
@@ -57,7 +57,7 @@ func (l *Login) handleRegisterOrgCheck(w http.ResponseWriter, r *http.Request) {
 	}
 	if data.Password != data.Password2 {
 		err := caos_errs.ThrowInvalidArgument(nil, "VIEW-KaGue", "Errors.User.Password.ConfirmationWrong")
-		l.renderRegisterOrg(w, r, authRequest, data, err)
+		l.renderRegistrationOrg(w, r, authRequest, data, err)
 		return
 	}
 
@@ -67,7 +67,7 @@ func (l *Login) handleRegisterOrgCheck(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := l.authRepo.RegisterOrg(setContext(r.Context(), ""), registerOrg)
 	if err != nil {
-		l.renderRegisterOrg(w, r, authRequest, data, err)
+		l.renderRegistrationOrg(w, r, authRequest, data, err)
 		return
 	}
 	if authRequest == nil {
@@ -78,13 +78,13 @@ func (l *Login) handleRegisterOrgCheck(w http.ResponseWriter, r *http.Request) {
 	l.renderNextStep(w, r, authRequest)
 }
 
-func (l *Login) renderRegisterOrg(w http.ResponseWriter, r *http.Request, authRequest *model.AuthRequest, formData *registerOrgFormData, err error) {
+func (l *Login) renderRegistrationOrg(w http.ResponseWriter, r *http.Request, authRequest *model.AuthRequest, formData *registerOrgFormData, err error) {
 	if formData == nil {
 		formData = new(registerOrgFormData)
 	}
 
 	data := registerOrgData{
-		baseData:            l.getBaseData(r, authRequest, tmplRegisterOrg, err),
+		baseData:            l.getBaseData(r, authRequest, tmplRegistrationOrg, err),
 		registerOrgFormData: *formData,
 	}
 
@@ -111,7 +111,7 @@ func (l *Login) renderRegisterOrg(w http.ResponseWriter, r *http.Request, authRe
 		data.IamDomain = orgPolicy.IamDomain
 	}
 
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplRegisterOrg], data, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplRegistrationOrg], data, nil)
 }
 
 func (d registerOrgFormData) toUserModel() *usr_model.User {

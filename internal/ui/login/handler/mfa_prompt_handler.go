@@ -92,5 +92,5 @@ func (l *Login) handleOtpCreation(w http.ResponseWriter, r *http.Request, authRe
 		Secret: otp.SecretString,
 		Url:    otp.Url,
 	}
-	l.renderMfaInitVerify(w, r, authReq, data, nil)
+	l.renderMfaInitVerification(w, r, authReq, data, nil)
 }

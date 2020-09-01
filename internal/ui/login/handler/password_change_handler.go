@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	tmplChangePassword     = "PasswordChange"
-	tmplChangePasswordDone = "PasswordChangeDone"
+	tmplPasswordChange     = "PasswordChange"
+	tmplPasswordChangeDone = "PasswordChangeDone"
 )
 
 type changePasswordData struct {
@@ -17,7 +17,7 @@ type changePasswordData struct {
 	NewPasswordConfirmation string `schema:"change-password-confirmation"`
 }
 
-func (l *Login) handleChangePassword(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handlePasswordChange(w http.ResponseWriter, r *http.Request) {
 	data := new(changePasswordData)
 	authReq, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
@@ -26,13 +26,13 @@ func (l *Login) handleChangePassword(w http.ResponseWriter, r *http.Request) {
 	}
 	err = l.authRepo.ChangePassword(setContext(r.Context(), authReq.UserOrgID), authReq.UserID, data.OldPassword, data.NewPassword)
 	if err != nil {
-		l.renderChangePassword(w, r, authReq, err)
+		l.renderPasswordChange(w, r, authReq, err)
 		return
 	}
 	l.renderChangePasswordDone(w, r, authReq)
 }
 
-func (l *Login) renderChangePassword(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
+func (l *Login) renderPasswordChange(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, err error) {
 	data := passwordData{
 		baseData:    l.getBaseData(r, authReq, "PasswordChange.Title", err),
 		profileData: l.getProfileData(authReq),
@@ -54,10 +54,10 @@ func (l *Login) renderChangePassword(w http.ResponseWriter, r *http.Request, aut
 			data.HasNumber = NumberRegex
 		}
 	}
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplChangePassword], data, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplPasswordChange], data, nil)
 }
 
 func (l *Login) renderChangePasswordDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
-	data := l.getUserData(r, authReq, tmplChangePasswordDone, nil)
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplChangePasswordDone], data, nil)
+	data := l.getUserData(r, authReq, tmplPasswordChangeDone, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplPasswordChangeDone], data, nil)
 }

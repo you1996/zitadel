@@ -32,28 +32,28 @@ func CreateRenderer(pathPrefix string, staticDir http.FileSystem, cookieName str
 		pathPrefix: pathPrefix,
 	}
 	tmplMapping := map[string]string{
-		tmplError:              "error.html",
-		tmplLogin:              "login.html",
-		tmplUserSelection:      "select_user.html",
-		tmplPassword:           "password.html",
-		tmplMfaVerify:          "mfa_verify.html",
-		tmplMfaPrompt:          "mfa_prompt.html",
-		tmplMfaInitVerify:      "mfa_init_verify.html",
-		tmplMfaInitDone:        "mfa_init_done.html",
-		tmplMailVerification:   "mail_verification.html",
-		tmplMailVerified:       "mail_verified.html",
-		tmplInitPassword:       "init_password.html",
-		tmplInitPasswordDone:   "init_password_done.html",
-		tmplInitUser:           "init_user.html",
-		tmplInitUserDone:       "init_user_done.html",
-		tmplPasswordResetDone:  "password_reset_done.html",
-		tmplChangePassword:     "change_password.html",
-		tmplChangePasswordDone: "change_password_done.html",
-		tmplRegister:           "register.html",
-		tmplLogoutDone:         "logout_done.html",
-		tmplRegisterOrg:        "register_org.html",
-		tmplChangeUsername:     "change_username.html",
-		tmplChangeUsernameDone: "change_username_done.html",
+		tmplError:               "error.html",
+		tmplLogin:               "login.html",
+		tmplUserSelection:       "select_user.html",
+		tmplPassword:            "password.html",
+		tmplMfaVerification:     "mfa_verify.html",
+		tmplMfaPrompt:           "mfa_prompt.html",
+		tmplMfaInitVerification: "mfa_init_verify.html",
+		tmplMfaInitDone:         "mfa_init_done.html",
+		tmplMailVerification:    "mail_verification.html",
+		tmplMailVerified:        "mail_verified.html",
+		tmplPasswordInit:        "init_password.html",
+		tmplPasswordInitDone:    "init_password_done.html",
+		tmplUserInit:            "init_user.html",
+		tmplUserInitDone:        "init_user_done.html",
+		tmplPasswordResetDone:   "password_reset_done.html",
+		tmplPasswordChange:      "change_password.html",
+		tmplPasswordChangeDone:  "change_password_done.html",
+		tmplRegistration:        "register.html",
+		tmplLogoutDone:          "logout_done.html",
+		tmplRegistrationOrg:     "register_org.html",
+		tmplUsernameChange:      "change_username.html",
+		tmplUsernameChangeDone:  "change_username_done.html",
 	}
 	funcs := map[string]interface{}{
 		"resourceUrl": func(file string) string {
@@ -165,11 +165,11 @@ func (l *Login) chooseNextStep(w http.ResponseWriter, r *http.Request, authReq *
 	case *model.SelectUserStep:
 		l.renderUserSelection(w, r, authReq, step)
 	case *model.InitPasswordStep:
-		l.renderInitPassword(w, r, authReq, authReq.UserID, "", err)
+		l.renderPasswordInit(w, r, authReq, authReq.UserID, "", err)
 	case *model.PasswordStep:
 		l.renderPassword(w, r, authReq, nil)
 	case *model.MfaVerificationStep:
-		l.renderMfaVerify(w, r, authReq, step, err)
+		l.renderMfaVerification(w, r, authReq, step, err)
 	case *model.RedirectToCallbackStep:
 		if len(authReq.PossibleSteps) > 1 {
 			l.chooseNextStep(w, r, authReq, 1, err)
@@ -177,13 +177,13 @@ func (l *Login) chooseNextStep(w http.ResponseWriter, r *http.Request, authReq *
 		}
 		l.redirectToCallback(w, r, authReq)
 	case *model.ChangePasswordStep:
-		l.renderChangePassword(w, r, authReq, err)
+		l.renderPasswordChange(w, r, authReq, err)
 	case *model.VerifyEMailStep:
 		l.renderMailVerification(w, r, authReq, "", err)
 	case *model.MfaPromptStep:
 		l.renderMfaPrompt(w, r, authReq, step, err)
 	case *model.InitUserStep:
-		l.renderInitUser(w, r, authReq, "", "", step.PasswordSet, nil)
+		l.renderUserInit(w, r, authReq, "", "", step.PasswordSet, nil)
 	case *model.ChangeUsernameStep:
 		l.renderChangeUsername(w, r, authReq, nil)
 	default:

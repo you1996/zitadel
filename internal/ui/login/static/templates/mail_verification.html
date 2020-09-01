@@ -2,7 +2,7 @@
 
 {{ template "user-profile" . }}
 
-<p>{{t "EmailVerification.Description"}}</p>
+<p>{{t "MailVerification.Description"}}</p>
 
 <form action="{{ mailVerificationUrl }}" method="POST">
 
@@ -13,7 +13,7 @@
 
     <div class="fields">
         <div class="field">
-            <label class="label" for="code">{{t "EmailVerification.Code"}}</label>
+            <label class="label" for="code">{{t "MailVerification.Code"}}</label>
             <input class="input" type="text" id="code" name="code" autocomplete="off" autofocus required>
         </div>
     </div>

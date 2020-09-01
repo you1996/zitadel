@@ -46,7 +46,7 @@ func (l *Login) handleLoginNameCheck(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if data.Register {
-		l.handleRegister(w, r)
+		l.handleRegistration(w, r)
 		return
 	}
 	userAgentID, _ := http_mw.UserAgentIDFromCtx(r.Context())

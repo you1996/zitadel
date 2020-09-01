@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	tmplRegister          = "Register"
+	tmplRegistration      = "Registration"
 	orgProjectCreatorRole = "ORG_PROJECT_CREATOR"
 )
 
@@ -38,17 +38,17 @@ type registerData struct {
 	HasSymbol                 string
 }
 
-func (l *Login) handleRegister(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handleRegistration(w http.ResponseWriter, r *http.Request) {
 	data := new(registerFormData)
 	authRequest, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
 		l.renderError(w, r, authRequest, err)
 		return
 	}
-	l.renderRegister(w, r, authRequest, data, nil)
+	l.renderRegistration(w, r, authRequest, data, nil)
 }
 
-func (l *Login) handleRegisterCheck(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handleRegistrationCheck(w http.ResponseWriter, r *http.Request) {
 	data := new(registerFormData)
 	authRequest, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
@@ -57,12 +57,12 @@ func (l *Login) handleRegisterCheck(w http.ResponseWriter, r *http.Request) {
 	}
 	if data.Password != data.Password2 {
 		err := caos_errs.ThrowInvalidArgument(nil, "VIEW-KaGue", "Errors.User.Password.ConfirmationWrong")
-		l.renderRegister(w, r, authRequest, data, err)
+		l.renderRegistration(w, r, authRequest, data, err)
 		return
 	}
 	iam, err := l.authRepo.GetIAM(r.Context())
 	if err != nil {
-		l.renderRegister(w, r, authRequest, data, err)
+		l.renderRegistration(w, r, authRequest, data, err)
 		return
 	}
 
@@ -72,7 +72,7 @@ func (l *Login) handleRegisterCheck(w http.ResponseWriter, r *http.Request) {
 	}
 	user, err := l.authRepo.Register(setContext(r.Context(), iam.GlobalOrgID), data.toUserModel(), member, iam.GlobalOrgID)
 	if err != nil {
-		l.renderRegister(w, r, authRequest, data, err)
+		l.renderRegistration(w, r, authRequest, data, err)
 		return
 	}
 	if authRequest == nil {
@@ -83,7 +83,7 @@ func (l *Login) handleRegisterCheck(w http.ResponseWriter, r *http.Request) {
 	l.renderNextStep(w, r, authRequest)
 }
 
-func (l *Login) renderRegister(w http.ResponseWriter, r *http.Request, authRequest *model.AuthRequest, formData *registerFormData, err error) {
+func (l *Login) renderRegistration(w http.ResponseWriter, r *http.Request, authRequest *model.AuthRequest, formData *registerFormData, err error) {
 	if formData == nil {
 		formData = new(registerFormData)
 	}
@@ -92,7 +92,7 @@ func (l *Login) renderRegister(w http.ResponseWriter, r *http.Request, authReque
 	}
 
 	data := registerData{
-		baseData:         l.getBaseData(r, authRequest, tmplRegister, err),
+		baseData:         l.getBaseData(r, authRequest, tmplRegistration, err),
 		registerFormData: *formData,
 	}
 	iam, _ := l.authRepo.GetIAM(r.Context())
@@ -130,7 +130,7 @@ func (l *Login) renderRegister(w http.ResponseWriter, r *http.Request, authReque
 			return formData.Gender == g
 		},
 	}
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplRegister], data, funcs)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplRegistration], data, funcs)
 }
 
 func (d registerFormData) toUserModel() *usr_model.User {

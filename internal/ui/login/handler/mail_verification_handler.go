@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	queryCode   = "code"
-	queryUserID = "userID"
+	queryMailVerificationCode   = "code"
+	queryMailVerificationUserID = "userID"
 
 	tmplMailVerification = "EmailVerification"
 	tmplMailVerified     = "EmailVerificationDone"
@@ -27,8 +27,8 @@ type mailVerificationData struct {
 }
 
 func (l *Login) handleMailVerification(w http.ResponseWriter, r *http.Request) {
-	userID := r.FormValue(queryUserID)
-	code := r.FormValue(queryCode)
+	userID := r.FormValue(queryMailVerificationUserID)
+	code := r.FormValue(queryMailVerificationCode)
 	if code != "" {
 		l.checkMailCode(w, r, nil, userID, code)
 		return

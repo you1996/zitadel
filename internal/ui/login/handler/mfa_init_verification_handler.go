@@ -12,18 +12,19 @@ import (
 )
 
 const (
-	tmplMfaInitVerify = "MfaInitVerify"
+	tmplMfaInitVerification = "MfaInitVerification"
+	tmplMfaInitDone         = "MfaInitDone"
 )
 
-type mfaInitVerifyData struct {
+type mfaInitVerificationData struct {
 	MfaType model.MfaType `schema:"mfaType"`
 	Code    string        `schema:"code"`
 	URL     string        `schema:"url"`
 	Secret  string        `schema:"secret"`
 }
 
-func (l *Login) handleMfaInitVerify(w http.ResponseWriter, r *http.Request) {
-	data := new(mfaInitVerifyData)
+func (l *Login) handleMfaInitVerification(w http.ResponseWriter, r *http.Request) {
+	data := new(mfaInitVerificationData)
 	authReq, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
 		l.renderError(w, r, authReq, err)
@@ -32,11 +33,11 @@ func (l *Login) handleMfaInitVerify(w http.ResponseWriter, r *http.Request) {
 	var verifyData *mfaVerifyData
 	switch data.MfaType {
 	case model.MfaTypeOTP:
-		verifyData = l.handleOtpVerify(w, r, authReq, data)
+		verifyData = l.otpVerificationData(w, r, authReq, data)
 	}
 
 	if verifyData != nil {
-		l.renderMfaInitVerify(w, r, authReq, verifyData, err)
+		l.renderMfaInitVerification(w, r, authReq, verifyData, err)
 		return
 	}
 
@@ -46,7 +47,7 @@ func (l *Login) handleMfaInitVerify(w http.ResponseWriter, r *http.Request) {
 	l.renderMfaInitDone(w, r, authReq, done)
 }
 
-func (l *Login) handleOtpVerify(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *mfaInitVerifyData) *mfaVerifyData {
+func (l *Login) otpVerificationData(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *mfaInitVerificationData) *mfaVerifyData {
 	err := l.authRepo.VerifyMfaOTPSetup(setContext(r.Context(), authReq.UserOrgID), authReq.UserID, data.Code)
 	if err == nil {
 		return nil
@@ -62,8 +63,8 @@ func (l *Login) handleOtpVerify(w http.ResponseWriter, r *http.Request, authReq 
 	return mfadata
 }
 
-func (l *Login) renderMfaInitVerify(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *mfaVerifyData, err error) {
-	data.baseData = l.getBaseData(r, authReq, tmplMfaInitVerify, err)
+func (l *Login) renderMfaInitVerification(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *mfaVerifyData, err error) {
+	data.baseData = l.getBaseData(r, authReq, tmplMfaInitVerification, err)
 	data.profileData = l.getProfileData(authReq)
 	if data.MfaType == model.MfaTypeOTP {
 		code, err := generateQrCode(data.otpData.Url)
@@ -72,7 +73,13 @@ func (l *Login) renderMfaInitVerify(w http.ResponseWriter, r *http.Request, auth
 		}
 	}
 
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplMfaInitVerify], data, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplMfaInitVerification], data, nil)
+}
+
+func (l *Login) renderMfaInitDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *mfaDoneData) {
+	data.baseData = l.getBaseData(r, authReq, tmplMfaInitDone, nil)
+	data.profileData = l.getProfileData(authReq)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplMfaInitDone], data, nil)
 }
 
 func generateQrCode(url string) (string, error) {

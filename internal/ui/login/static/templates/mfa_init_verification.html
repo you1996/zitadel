@@ -2,7 +2,7 @@
 
 {{ template "user-profile" . }}
 
-<p>{{t "MfaInitVerify.Description"}}</p>
+<p>{{t "MfaInitVerification.Description"}}</p>
 
 <form action="{{ mfaInitVerifyUrl }}" method="POST">
 
@@ -14,20 +14,20 @@
     <input type="hidden" name="secret" value="{{ .Secret }}" />
 
     {{if (eq .MfaType 0) }}
-        <p>{{t "MfaInitVerify.OtpDescription"}}</p>
+        <p>{{t "MfaInitVerification.OtpDescription"}}</p>
         <div id="qrcode">
             {{.QrCode}}
         </div>
         <div class="fields">
             <div class="field">
-                <span class="label" for="secret">{{t "MfaInitVerify.Secret"}}</span>
+                <span class="label" for="secret">{{t "MfaInitVerification.Secret"}}</span>
                 <span class="input" id="secret">
                     {{.Secret}}
                     <span class="copy material-icons" data-copy="{{ .Secret }}" >content_copy</span>
                 </span>
             </div>
             <div class="field">
-               <label class="label" for="code">{{t "MfaInitVerify.Code"}}</label>
+               <label class="label" for="code">{{t "MfaInitVerification.Code"}}</label>
                 <input class="input" type="text" id="code" name="code" autocomplete="off" autofocus required>
             </div>
         </div>

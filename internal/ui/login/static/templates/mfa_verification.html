@@ -2,7 +2,7 @@
 
 {{ template "user-profile" . }}
 
-<p>{{t "MfaVerify.Description"}}</p>
+<p>{{t "MfaVerification.Description"}}</p>
 
 <form action="{{ mfaVerifyUrl }}" method="POST">
 
@@ -13,7 +13,7 @@
 
     <div class="fields">
         <div class="field">
-            <label class="label" for="code">{{t "MfaVerify.Code"}}</label>
+            <label class="label" for="code">{{t "MfaVerification.Code"}}</label>
             <input class="input" type="text" id="code" name="code" autocomplete="off" autofocus required>
         </div>
     </div>

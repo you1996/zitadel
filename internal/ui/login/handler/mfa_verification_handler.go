@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	tmplMfaVerify = "MfaVerify"
+	tmplMfaVerification = "MfaVerification"
 )
 
 type mfaVerifyFormData struct {
@@ -16,7 +16,7 @@ type mfaVerifyFormData struct {
 	Code    string        `schema:"code"`
 }
 
-func (l *Login) handleMfaVerify(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handleMfaVerification(w http.ResponseWriter, r *http.Request) {
 	data := new(mfaVerifyFormData)
 	authReq, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
@@ -34,11 +34,11 @@ func (l *Login) handleMfaVerify(w http.ResponseWriter, r *http.Request) {
 	l.renderNextStep(w, r, authReq)
 }
 
-func (l *Login) renderMfaVerify(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, verificationStep *model.MfaVerificationStep, err error) {
-	data := l.getUserData(r, authReq, tmplMfaVerify, err)
+func (l *Login) renderMfaVerification(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, verificationStep *model.MfaVerificationStep, err error) {
+	data := l.getUserData(r, authReq, tmplMfaVerification, err)
 	if verificationStep != nil {
 		data.MfaProviders = verificationStep.MfaProviders
 		data.SelectedMfaProvider = verificationStep.MfaProviders[0]
 	}
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplMfaVerify], data, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplMfaVerification], data, nil)
 }

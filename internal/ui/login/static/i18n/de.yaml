@@ -1,3 +1,45 @@
+Login:
+  Title: Anmeldung
+  Description: Gib deine Benutzerdaten ein.
+  Loginname: Loginname
+  LoginnamePlaceHolder: username@domain
+
+LogoutDone:
+  Title: Ausgeloggt
+  Description: Du wurdest erfolgreich ausgeloggt.
+
+MailVerification:
+  Title: E-Mail Verifizierung
+  Description: Du hast ein E-Mail zur Verifizierung deiner E-Mail Adresse bekommen. Gib den Code im untenstehenden Formular ein. Mit erneut versenden, wird dir ein neues E-Mail zugestellt.
+  Code: Code
+
+MailVerificationDone:
+  Title: E-Mail Verifizierung
+  Description: Deine E-Mail Adresse wurde erfolgreich verifiziert.
+
+MfaInitDone:
+  Title: Multifaktor Verifizierung erstellt
+  Description: Multifikator Verifizierung erfolgreich abgeschlossen. Der Multifaktor muss bei jeder Anmeldung eingegeben werden, dies beinhaltet auch den aktuellen Authentifizierungs Prozess.
+
+MfaInitVerification:
+  Title: Multifaktor Verifizierung
+  Description: Verifiziere deinen Multifaktor
+  OtpDescription: Scanne den Code mit einem Authentifizierungs-App (z.B Google Authentificator) oder kopiere das Secret und gib anschliessend den Code ein.
+  Secret: Secret
+  Code: Code
+
+MfaPrompt:
+  Title: Multifaktor hinzufügen
+  Description: Möchtest du einen Mulitfaktor hinzufügen?
+  Provider0: OTP
+  Provider1: SMS
+
+MfaVerification:
+  Title: Multifaktor verifizieren
+  Description: Verifiziere deinen Multifaktor
+  OTP: OTP
+  Code: Code
+
 Password:
   Title: Passwort
   Description: Gib deine Benutzerdaten ein.
@@ -7,73 +49,6 @@ Password:
   HasLowercase: Kleinbuchstaben
   HasNumber: Nummer
   HasSymbol: Symbol
-
-Login:
-  Title: Anmeldung
-  Description: Gib deine Benutzerdaten ein.
-  Loginname: Loginname
-  LoginnamePlaceHolder: username@domain
-
-UserSelection:
-  Title: Account auswählen
-  Description: Wähle deinen Account aus.
-  OtherUser: Anderer Benutzer
-  SessionState0: aktiv
-  SessionState1: inaktiv
-
-UsernameChange:
-  Title: Usernamen ändern
-  Description: Wähle deinen neuen Benutzernamen
-  Username: Benutzernamen
-
-UsernameChangeDone:
-  Title: Username geändert
-  Description: Der Username wurde erfolgreich geändert.
-
-MfaVerify:
-  Title: Multifaktor verifizieren
-  Description: Verifiziere deinen Multifaktor
-  OTP: OTP
-  Code: Code
-  
-InitPassword: 
-  Title: Passwort setzen
-  Description: Du hast einen Code erhalten, welcher im untenstehenden Formular eingegeben werden muss um ein neues Passwort zu setzen.
-  Code: Code
-  NewPassword: Neues Passwort
-  NewPasswordConfirm: Passwort bestätigen
-
-InitPasswordDone:
-  Title: Passwort gesetzt
-  Description: Passwort erfolgreich gesetzt
-
-InitUser:
-  Title: User aktivieren
-  Description: Du hast einen Code erhalten, welcher im untenstehenden Formular eingegeben werden muss um deine EMail zu verifizieren und ein neues Passwort zu setzen.
-  Code: Code
-  NewPassword: Neues Passwort
-  NewPasswordConfirm: Passwort bestätigen
-
-InitUserDone:
-  Title: User aktiviert
-  Description: EMail verifiziert und Passwort erfolgreich gesetzt
-
-MfaPrompt:
-  Title: Multifaktor hinzufügen
-  Description: Möchtest du einen Mulitfaktor hinzufügen?
-  Provider0: OTP
-  Provider1: SMS
-
-MfaInitVerify:
-  Title: Multifaktor Verifizierung
-  Description: Verifiziere deinen Multifaktor
-  OtpDescription: Scanne den Code mit einem Authentifizierungs-App (z.B Google Authentificator) oder kopiere das Secret und gib anschliessend den Code ein.
-  Secret: Secret
-  Code: Code
-
-MfaInitDone:
-  Title: Multifaktor Verifizierung erstellt
-  Description: Multifikator Verifizierung erfolgreich abgeschlossen. Der Multifaktor muss bei jeder Anmeldung eingegeben werden, dies beinhaltet auch den aktuellen Authentifizierungs Prozess.
 
 PasswordChange:
   Title: Passwort ändern
@@ -86,22 +61,20 @@ PasswordChangeDone:
   Title: Passwort ändern
   Description: Das Passwort wurde erfolgreich geändert.
 
-PasswordResetDone:
-  Title: Resetlink versendet
-  Description: Prüfe dein E-Mail Postfach, um ein neues Passwort zu setzen.
+PasswordInit:
+  Title: Passwort setzen
+  Description: Du hast einen Code erhalten, welcher im untenstehenden Formular eingegeben werden muss um ein neues Passwort zu setzen.
+  Code: Code
+  NewPassword: Neues Passwort
+  NewPasswordConfirm: Passwort bestätigen
 
-PasswordSetDone:
+PasswordInitDone:
   Title: Passwort gesetzt
   Description: Das Passwort wurde erfolgreich gesetzt.
 
-EmailVerification:
-  Title: E-Mail Verifizierung
-  Description: Du hast ein E-Mail zur Verifizierung deiner E-Mail Adresse bekommen. Gib den Code im untenstehenden Formular ein. Mit erneut versenden, wird dir ein neues E-Mail zugestellt.
-  Code: Code
-
-EmailVerificationDone:
-  Title: E-Mail Verifizierung
-  Description: Deine E-Mail Adresse wurde erfolgreich verifiziert.
+PasswordResetDone:
+  Title: Resetlink versendet
+  Description: Prüfe dein E-Mail Postfach, um ein neues Passwort zu setzen.
 
 Registration:
   Title: Registration
@@ -138,9 +111,32 @@ RegistrationOrg:
   Password: Passwort
   Password2: Passwort wiederholen
 
-LogoutDone:
-  Title: Ausgeloggt
-  Description: Du wurdest erfolgreich ausgeloggt.
+UserInit:
+  Title: User aktivieren
+  Description: Du hast einen Code erhalten, welcher im untenstehenden Formular eingegeben werden muss um deine EMail zu verifizieren und ein neues Passwort zu setzen.
+  Code: Code
+  NewPassword: Neues Passwort
+  NewPasswordConfirm: Passwort bestätigen
+
+UserInitDone:
+  Title: User aktiviert
+  Description: EMail verifiziert und Passwort erfolgreich gesetzt
+
+UserSelection:
+  Title: Account auswählen
+  Description: Wähle deinen Account aus.
+  OtherUser: Anderer Benutzer
+  SessionState0: aktiv
+  SessionState1: inaktiv
+
+UsernameChange:
+  Title: Usernamen ändern
+  Description: Wähle deinen neuen Benutzernamen
+  Username: Benutzernamen
+
+UsernameChangeDone:
+  Title: Username geändert
+  Description: Der Username wurde erfolgreich geändert.
 
 Actions:
   Login: anmelden

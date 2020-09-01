@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	queryInitUserCode     = "code"
-	queryInitUserUserID   = "userID"
-	queryInitUserPassword = "passwordset"
+	queryUserInitCode        = "code"
+	queryUserInitUserID      = "userID"
+	queryUserInitPasswordSet = "passwordset"
 
-	tmplInitUser     = "InitUser"
-	tmplInitUserDone = "InitUserDone"
+	tmplUserInit     = "UserInit"
+	tmplUserInitDone = "UserInitDone"
 )
 
 type initUserFormData struct {
@@ -40,14 +40,14 @@ type initUserData struct {
 	HasSymbol                 string
 }
 
-func (l *Login) handleInitUser(w http.ResponseWriter, r *http.Request) {
-	userID := r.FormValue(queryInitUserUserID)
-	code := r.FormValue(queryInitUserCode)
-	passwordSet, _ := strconv.ParseBool(r.FormValue(queryInitUserPassword))
-	l.renderInitUser(w, r, nil, userID, code, passwordSet, nil)
+func (l *Login) handleUserInit(w http.ResponseWriter, r *http.Request) {
+	userID := r.FormValue(queryUserInitUserID)
+	code := r.FormValue(queryUserInitCode)
+	passwordSet, _ := strconv.ParseBool(r.FormValue(queryUserInitPasswordSet))
+	l.renderUserInit(w, r, nil, userID, code, passwordSet, nil)
 }
 
-func (l *Login) handleInitUserCheck(w http.ResponseWriter, r *http.Request) {
+func (l *Login) handleUserInitCheck(w http.ResponseWriter, r *http.Request) {
 	data := new(initUserFormData)
 	authReq, err := l.getAuthRequestAndParseData(r, data)
 	if err != nil {
@@ -65,7 +65,7 @@ func (l *Login) handleInitUserCheck(w http.ResponseWriter, r *http.Request) {
 func (l *Login) checkUserInitCode(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, data *initUserFormData, err error) {
 	if data.Password != data.PasswordConfirm {
 		err := caos_errs.ThrowInvalidArgument(nil, "VIEW-fsdfd", "Errors.User.Password.ConfirmationWrong")
-		l.renderInitUser(w, r, authReq, data.UserID, data.Code, data.PasswordSet, err)
+		l.renderUserInit(w, r, authReq, data.UserID, data.Code, data.PasswordSet, err)
 		return
 	}
 	userOrgID := login
@@ -74,7 +74,7 @@ func (l *Login) checkUserInitCode(w http.ResponseWriter, r *http.Request, authRe
 	}
 	err = l.authRepo.VerifyInitCode(setContext(r.Context(), userOrgID), data.UserID, data.Code, data.Password)
 	if err != nil {
-		l.renderInitUser(w, r, authReq, data.UserID, "", data.PasswordSet, err)
+		l.renderUserInit(w, r, authReq, data.UserID, "", data.PasswordSet, err)
 		return
 	}
 	l.renderInitUserDone(w, r, authReq)
@@ -86,15 +86,15 @@ func (l *Login) resendUserInit(w http.ResponseWriter, r *http.Request, authReq *
 		userOrgID = authReq.UserOrgID
 	}
 	err := l.authRepo.ResendInitVerificationMail(setContext(r.Context(), userOrgID), userID)
-	l.renderInitUser(w, r, authReq, userID, "", showPassword, err)
+	l.renderUserInit(w, r, authReq, userID, "", showPassword, err)
 }
 
-func (l *Login) renderInitUser(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, userID, code string, passwordSet bool, err error) {
+func (l *Login) renderUserInit(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest, userID, code string, passwordSet bool, err error) {
 	if authReq != nil {
 		userID = authReq.UserID
 	}
 	data := initUserData{
-		baseData:    l.getBaseData(r, authReq, tmplInitUser, err),
+		baseData:    l.getBaseData(r, authReq, tmplUserInit, err),
 		profileData: l.getProfileData(authReq),
 		UserID:      userID,
 		Code:        code,
@@ -117,10 +117,10 @@ func (l *Login) renderInitUser(w http.ResponseWriter, r *http.Request, authReq *
 			data.HasNumber = NumberRegex
 		}
 	}
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplInitUser], data, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplUserInit], data, nil)
 }
 
 func (l *Login) renderInitUserDone(w http.ResponseWriter, r *http.Request, authReq *model.AuthRequest) {
-	data := l.getUserData(r, authReq, tmplInitUserDone, nil)
-	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplInitUserDone], data, nil)
+	data := l.getUserData(r, authReq, tmplUserInitDone, nil)
+	l.renderer.RenderTemplate(w, r, l.renderer.Templates[tmplUserInitDone], data, nil)
 }
