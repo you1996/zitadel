@@ -3,18 +3,18 @@ import hljs from 'highlight.js';
 import marked from 'marked';
 import path from 'path';
 
-import { SLUG_PRESERVE_UNICODE, SLUG_SEPARATOR } from '../../config';
+import { REPLACEMENTS, SLUG_PRESERVE_UNICODE, SLUG_SEPARATOR } from '../../config';
 import { extract_frontmatter, extract_metadata, langs, link_renderer } from './markdown.js';
 import { make_session_slug_processor } from './slug';
 
 const block_types = [
+    'paragraph',
     'blockquote',
     'html',
     'heading',
     'hr',
     'list',
     'listitem',
-    'paragraph',
     'table',
     'tablerow',
     'tablecell'
@@ -51,9 +51,12 @@ export default function generate_docs(dirpath, dir, lang) {
                 return '<div class="side-by-side"><div class="copy">';
             };
 
-            // renderer.list = (src) => {
-            //     console.log(src);
-            // };
+            renderer.paragraph = (source) => {
+                Object.keys(REPLACEMENTS).forEach(replacement => {
+                    source = source.replace(REPLACEMENTS[replacement], replacement);
+                });
+                return source;
+            };
 
             renderer.code = (source, lang) => {
                 source = source.replace(/^ +/gm, (match) => match.split('    ').join('\t'));

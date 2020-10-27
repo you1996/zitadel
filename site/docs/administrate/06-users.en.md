@@ -4,7 +4,7 @@ title: Users
 
 ### What are users
 
-In **ZITADEL** there are different [users](administrate#Users). Some belong to dedicated [organisations](administrate#Organisations) other belong to the global [organisations](administrate#Organisations). Some of them are human [users](administrate#Users) others are machines.
+In **ZITADEL** there are different [users](administrate#Users). Some belong to dedicated [organisations](administrate#Organisations) other belong to the global [organisations](administrate#Organisations). Some of them are human Users others are machines.
 Nonetheless we treat them all the same in regard to [roles](administrate#Roles) management and audit trail.
 
 #### Human vs. Service Users
