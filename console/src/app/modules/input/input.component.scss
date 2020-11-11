@@ -1,0 +1,111 @@
+@import '~@abraxas/styles';
+@import '../icon/icons';
+
+@include icon-base-definition();
+
+:host {
+  display: inline-block;
+}
+
+input {
+  border: 1px solid $color-grey-3;
+  border-radius: 2px;
+  box-sizing: border-box;
+  outline: none;
+  font-family: $font-family;
+  font-size: $font-size-base;
+  padding: .5rem .5rem;
+  height: 34px;
+  width: 100%;
+  box-shadow: none;
+
+  &.focus-outline:focus {
+    outline: 2px solid $color-grey-3;
+    outline-offset: 2px;
+  }
+
+  &::placeholder {
+    color: $color-grey-4;
+    font-style: italic;
+    opacity: 1;
+  }
+
+  &.error,
+  &.ng-dirty.ng-invalid.ng-touched {
+    color: $color-signal-alternate-error;
+    border-color: $color-signal-alternate-error;
+    background-color: $color-signal-alternate-error-25;
+  }
+
+  &[disabled] {
+    font-style: italic;
+    color: $color-grey-3;
+    border-color: $color-grey-4;
+    background-color: $color-grey-6;
+  }
+
+  &[readonly] {
+    color: $color-grey-3;
+    border-color: transparent;
+    background-color: transparent;
+    padding: .5rem 0;
+    outline: none;
+
+    &.error {
+      color: $color-signal-alternate-error;
+    }
+  }
+
+  &[type='number'] {
+    -moz-appearance: textfield;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+
+  &[type='date'] {
+    position: relative;
+    padding: 6px .5rem;
+    height: 34px;
+    font-family: $font-family;
+
+    &::before {
+      cursor: pointer;
+      content: get-icon-content('calendar');
+      background: none;
+      display: block;
+      font-family: $icomoon-font-family;
+      font-size: 30px;
+      font-weight: $font-weight-regular;
+      width: 15px;
+      position: absolute;
+      top: 1px;
+      right: 15px;
+      color: $color-primary;
+    }
+
+    &[disabled] {
+      &::before {
+        color: $color-grey-4;
+        cursor: default;
+      }
+    }
+
+    &.error {
+      &::before {
+        color: $color-signal-error;
+        cursor: default;
+      }
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      color: transparent;
+      background: none;
+      z-index: 1;
+      cursor: pointer;
+    }
+  }
+}

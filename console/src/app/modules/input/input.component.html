@@ -1,0 +1,4 @@
+<input #input [class.focus-outline]="focusOutline" [(ngModel)]="valueProperty" [type]="type" (blur)="onBlur()"
+    [ngClass]="{ error: error, optional: optional && !required }" [disabled]="disabled" [placeholder]="placeholder"
+    [readonly]="readonly" [required]="required" [maxlength]="maxlength" [min]="min" [max]="max" [step]="step"
+    [tabIndex]="tabIndex" />
