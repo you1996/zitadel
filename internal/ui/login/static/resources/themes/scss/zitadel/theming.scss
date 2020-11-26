@@ -21,4 +21,71 @@
   
     @return $result;
   }
+
+@function _lgn-create-light-color-config($primary, $accent, $warn: null) {
+    @return (
+      primary: $primary,
+      accent: $accent,
+      warn: if($warn != null, $warn, mat-palette($mat-red)),
+      is-dark: false,
+      foreground: $mat-light-theme-foreground,
+      background: $mat-light-theme-background,
+    );
+}
+
+@function _lgn-create-dark-color-config($primary, $accent, $warn: null) {
+    @return (
+      primary: $primary,
+      accent: $accent,
+      warn: if($warn != null, $warn, mat-palette($mat-red)),
+      is-dark: true,
+      foreground: $mat-dark-theme-foreground,
+      background: $mat-dark-theme-background,
+    );
+  }
   
+@function lgn-light-theme($primary, $accent: null, $warn: mat-palette($mat-red)) {
+    @if $accent != null {
+      @return lgn-private-create-backwards-compatibility-theme(_mat-validate-theme((
+        _is-legacy-theme: true,
+        color: _mat-create-light-color-config($primary, $accent, $warn),
+      )));
+    }
+
+    $result: $primary;
+    @if map-get($primary, color) {
+      $color-settings: map-get($primary, color);
+      $primary: map-get($color-settings, primary);
+      $accent: map-get($color-settings, accent);
+      $warn: map-get($color-settings, warn);
+      $result: map-merge($result, (color: _lgn-create-light-color-config($primary, $accent, $warn)));
+    }
+    @return lgn-private-create-backwards-compatibility-theme(_mat-validate-theme($result));
+  }
+
+@function lgn-dark-theme($primary, $accent: null, $warn: mat-palette($mat-red)) {
+    @if $accent != null {
+      @return lgn-private-create-backwards-compatibility-theme(_mat-validate-theme((
+        _is-legacy-theme: true,
+        color: _mat-create-dark-color-config($primary, $accent, $warn),
+      )));
+    }
+  
+    $result: $primary;
+    @if map-get($primary, color) {
+      $color-settings: map-get($primary, color);
+      $primary: map-get($color-settings, primary);
+      $accent: map-get($color-settings, accent);
+      $warn: map-get($color-settings, warn);
+      $result: map-merge($result, (color: _lgn-create-dark-color-config($primary, $accent, $warn)));
+    }
+    @return lgn-private-create-backwards-compatibility-theme(_mat-validate-theme($result));
+}
+
+@function lgn-private-create-backwards-compatibility-theme($theme) {
+    @if not map-get($theme, color) {
+        @return $theme;
+    }
+    $color: map-get($theme, color);
+    @return map-merge($theme, $color);
+}
