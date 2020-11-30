@@ -129,3 +129,32 @@
       length($value) == 0
     );
   }
+
+// Gets the theme from the given value that is either already a theme, or a color configuration.
+// This handles the legacy case where developers pass a color configuration directly to the
+// theme mixin. Before we introduced the new pattern for constructing a theme, developers passed
+// the color configuration directly to the theme mixins. This can be still the case if developers
+// construct a theme manually and pass it to a theme. We support this for backwards compatibility.
+// TODO(devversion): remove this in the future. Constructing themes manually is rare,
+// and the code can be easily updated to the new API.
+@function lgn-private-legacy-get-theme($theme-or-color-config) {
+    @if lgn-private-is-theme-object($theme-or-color-config) {
+      @return $theme-or-color-config;
+    }
+    @return lgn-private-create-backwards-compatibility-theme((
+      _is-legacy-theme: true,
+      color: $theme-or-color-config
+    ));
+  }
+
+// Note that the `$theme.primary` key does usually not exist since the color configuration
+// is stored in `$theme.color` which contains a property for `primary`. This method copies
+// the map from `$theme.color` to `$theme` for backwards compatibility.
+@function lgn-private-create-backwards-compatibility-theme($theme) {
+    @if not map-get($theme, color) {
+      @return $theme;
+    }
+    $color: map-get($theme, color);
+    @return map-merge($theme, $color);
+  }
+  
