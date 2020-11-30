@@ -1,0 +1,26 @@
+@import 'all';
+
+
+// Include non-theme styles for core.
+@include lgn-core();
+
+$light-primary: lgn-palette($lgn-light-brand);
+$light-accent: lgn-palette($lgn-accent-color);
+$light-warn: lgn-palette($lgn-warn);
+
+$dark-primary: mat-palette($lgn-dark-brand);
+$dark-accent: mat-palette($lgn-accent-color);
+$dark-warn: mat-palette($lgn-warn);
+
+$light-theme: lgn-light-theme($light-primary, $light-accent, $light-warn);
+$dark-theme: lgn-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+$light-theme: lgn-light-theme((
+  color: (
+    primary: $primary,
+    accent: $accent,
+  )
+));
+
+// Include all theme styles for the components.
+@include lgn-theme($theme);

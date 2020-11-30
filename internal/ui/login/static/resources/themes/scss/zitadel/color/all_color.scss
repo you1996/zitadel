@@ -1,0 +1,20 @@
+@import '../all';
+@import '../theming';
+
+// Includes all of the color styles.
+@mixin lgn-color($config-or-theme) {
+    // In case a theme object has been passed instead of a configuration for
+    // the color system, extract the color config from the theme object.
+    $config: if(lgn-private-is-theme-object($config-or-theme),
+        lgn-get-color-config($config-or-theme), $config-or-theme);
+  
+    @if $config == null {
+      @error 'No color configuration specified.';
+    }
+  
+    @include lgn-theme((
+      color: $config,
+      typography: null,
+      density: null,
+    ));
+  }
