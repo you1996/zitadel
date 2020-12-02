@@ -10,22 +10,26 @@ import (
 	"github.com/caos/zitadel/internal/id"
 	"github.com/caos/zitadel/internal/tracing"
 	iam_repo "github.com/caos/zitadel/internal/v2/repository/iam"
+	"github.com/jinzhu/gorm"
 )
 
 type Repository struct {
 	eventstore   *eventstore.Eventstore
 	idGenerator  id.Generator
 	secretCrypto crypto.Crypto
+	db           *gorm.DB
 }
 
 type Config struct {
 	Eventstore     *eventstore.Eventstore
+	DB             *gorm.DB
 	SystemDefaults sd.SystemDefaults
 }
 
 func StartRepository(config *Config) (repo *Repository, err error) {
 	repo = &Repository{
 		eventstore:  config.Eventstore,
+		db:          config.DB,
 		idGenerator: id.SonyFlakeGenerator,
 	}
 	iam_repo.RegisterEventMappers(repo.eventstore)

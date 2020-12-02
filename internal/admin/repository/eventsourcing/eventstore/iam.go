@@ -19,6 +19,7 @@ import (
 	usr_model "github.com/caos/zitadel/internal/user/model"
 	usr_es "github.com/caos/zitadel/internal/user/repository/eventsourcing"
 	iam_business "github.com/caos/zitadel/internal/v2/business/iam"
+	"github.com/caos/zitadel/internal/v2/view/iam"
 )
 
 type IAMRepository struct {
@@ -67,6 +68,10 @@ func (repo *IAMRepository) RemoveIAMMember(ctx context.Context, userID string) e
 
 func (repo *IAMRepository) SearchIAMMembers(ctx context.Context, request *iam_model.IAMMemberSearchRequest) (*iam_model.IAMMemberSearchResponse, error) {
 	request.EnsureLimit(repo.SearchLimit)
+	if repo.IAMV2 != nil {
+		search := new(iam.MemberSearchRequest)
+		members, count, err := repo.IAMV2.SearchMember(ctx, search)
+	}
 	sequence, err := repo.View.GetLatestIAMMemberSequence()
 	logging.Log("EVENT-Slkci").OnError(err).WithField("traceID", tracing.TraceIDFromCtx(ctx)).Warn("could not read latest iam sequence")
 	members, count, err := repo.View.SearchIAMMembers(request)

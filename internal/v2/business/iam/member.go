@@ -8,6 +8,8 @@ import (
 	iam_model "github.com/caos/zitadel/internal/iam/model"
 	"github.com/caos/zitadel/internal/tracing"
 	iam_repo "github.com/caos/zitadel/internal/v2/repository/iam"
+	"github.com/caos/zitadel/internal/v2/view"
+	"github.com/caos/zitadel/internal/v2/view/iam"
 )
 
 func (r *Repository) AddMember(ctx context.Context, member *iam_model.IAMMember) (*iam_model.IAMMember, error) {
@@ -53,13 +55,8 @@ func (r *Repository) ChangeMember(ctx context.Context, member *iam_model.IAMMemb
 	iam := iam_repo.AggregateFromWriteModel(&existingMember.WriteModel).
 		PushMemberChangedFromExisting(ctx, existingMember, member.Roles...)
 
-	events, err := r.eventstore.PushAggregates(ctx, iam)
+	err = r.eventstore.PushAggregate(ctx, existingMember, iam)
 	if err != nil {
-		return nil, err
-	}
-
-	existingMember.AppendEvents(events...)
-	if err = existingMember.Reduce(); err != nil {
 		return nil, err
 	}
 
@@ -92,6 +89,17 @@ func (r *Repository) MemberByID(ctx context.Context, iamID, userID string) (memb
 	}
 
 	return member, nil
+}
+
+func (r *Repository) SearchMember(ctx context.Context, search *iam.MemberSearchRequest) (_ []*iam.MemberView, count uint64, err error) {
+	ctx, span := tracing.NewSpan(ctx)
+	defer func() { span.EndWithError(err) }()
+
+	members := []*iam.MemberView{}
+	query := view.PrepareSearchQuery("members", search)
+	count, err = query(r.db, members)
+
+	return members, count, nil
 }
 
 func (r *Repository) memberWriteModelByID(ctx context.Context, iamID, userID string) (member *iam_repo.MemberWriteModel, err error) {
