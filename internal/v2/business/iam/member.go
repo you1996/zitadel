@@ -6,6 +6,7 @@ import (
 	"github.com/caos/zitadel/internal/errors"
 	caos_errs "github.com/caos/zitadel/internal/errors"
 	iam_model "github.com/caos/zitadel/internal/iam/model"
+	iam_view_model "github.com/caos/zitadel/internal/iam/repository/view/model"
 	"github.com/caos/zitadel/internal/tracing"
 	iam_repo "github.com/caos/zitadel/internal/v2/repository/iam"
 	"github.com/caos/zitadel/internal/v2/view"
@@ -91,15 +92,18 @@ func (r *Repository) MemberByID(ctx context.Context, iamID, userID string) (memb
 	return member, nil
 }
 
-func (r *Repository) SearchMember(ctx context.Context, search *iam.MemberSearchRequest) (_ []*iam.MemberView, count uint64, err error) {
+func (r *Repository) SearchMember(ctx context.Context, search *iam_model.IAMMemberSearchRequest) (_ []*iam_view_model.IAMMemberView, count uint64, err error) {
 	ctx, span := tracing.NewSpan(ctx)
 	defer func() { span.EndWithError(err) }()
 
 	members := []*iam.MemberView{}
-	query := view.PrepareSearchQuery("members", search)
-	count, err = query(r.db, members)
+	query := view.PrepareSearchQuery("adminapi.iam_members", memberSearchRequestFromIAMMemberSearchRequest(search))
+	count, err = query(r.db, &members)
+	if err != nil {
+		return nil, 0, err
+	}
 
-	return members, count, nil
+	return memberViewsToIAMMemberViews(members), count, nil
 }
 
 func (r *Repository) memberWriteModelByID(ctx context.Context, iamID, userID string) (member *iam_repo.MemberWriteModel, err error) {

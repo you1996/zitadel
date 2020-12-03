@@ -10,7 +10,20 @@ type MemberSearchRequest struct {
 	view.BaseSearchRequest
 }
 
+func NewMemberSearchRequest(limit, offset uint64, asc bool) *MemberSearchRequest {
+	return &MemberSearchRequest{
+		BaseSearchRequest: view.BaseSearchRequest{
+			Limit:  limit,
+			Offset: offset,
+			Asc:    asc,
+		},
+	}
+}
+
 func (r *MemberSearchRequest) SortBy(key MemberSearchKey) *MemberSearchRequest {
+	if !key.Valid() {
+		return r
+	}
 	r.SortingColumn = &key
 	return r
 }

@@ -75,7 +75,11 @@ func Start(conf Config, systemDefaults sd.SystemDefaults, roles []string) (*EsRe
 	if err != nil {
 		return nil, err
 	}
-	iamV2, err := iam_business.StartRepository(&iam_business.Config{Eventstore: esV2, SystemDefaults: systemDefaults})
+	iamV2, err := iam_business.StartRepository(&iam_business.Config{
+		Eventstore:     esV2,
+		SystemDefaults: systemDefaults,
+		DB:             view.Db,
+	})
 	if err != nil {
 		return nil, err
 	}

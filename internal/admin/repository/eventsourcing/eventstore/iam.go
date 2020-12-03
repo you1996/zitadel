@@ -19,7 +19,6 @@ import (
 	usr_model "github.com/caos/zitadel/internal/user/model"
 	usr_es "github.com/caos/zitadel/internal/user/repository/eventsourcing"
 	iam_business "github.com/caos/zitadel/internal/v2/business/iam"
-	"github.com/caos/zitadel/internal/v2/view/iam"
 )
 
 type IAMRepository struct {
@@ -66,18 +65,20 @@ func (repo *IAMRepository) RemoveIAMMember(ctx context.Context, userID string) e
 	return repo.IAMEventstore.RemoveIAMMember(ctx, member)
 }
 
-func (repo *IAMRepository) SearchIAMMembers(ctx context.Context, request *iam_model.IAMMemberSearchRequest) (*iam_model.IAMMemberSearchResponse, error) {
+func (repo *IAMRepository) SearchIAMMembers(ctx context.Context, request *iam_model.IAMMemberSearchRequest) (_ *iam_model.IAMMemberSearchResponse, err error) {
 	request.EnsureLimit(repo.SearchLimit)
+	var members []*iam_es_model.IAMMemberView
+	var count uint64
 	if repo.IAMV2 != nil {
-		search := new(iam.MemberSearchRequest)
-		members, count, err := repo.IAMV2.SearchMember(ctx, search)
+		members, count, err = repo.IAMV2.SearchMember(ctx, request)
+	} else {
+		members, count, err = repo.View.SearchIAMMembers(request)
 	}
-	sequence, err := repo.View.GetLatestIAMMemberSequence()
-	logging.Log("EVENT-Slkci").OnError(err).WithField("traceID", tracing.TraceIDFromCtx(ctx)).Warn("could not read latest iam sequence")
-	members, count, err := repo.View.SearchIAMMembers(request)
 	if err != nil {
 		return nil, err
 	}
+	sequence, err := repo.View.GetLatestIAMMemberSequence()
+	logging.Log("EVENT-Slkci").OnError(err).WithField("traceID", tracing.TraceIDFromCtx(ctx)).Warn("could not read latest iam sequence")
 	result := &iam_model.IAMMemberSearchResponse{
 		Offset:      request.Offset,
 		Limit:       request.Limit,
