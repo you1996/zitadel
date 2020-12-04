@@ -1,19 +1,21 @@
 package handler
 
 import (
+	"net/http"
+	"time"
+
 	"github.com/caos/logging"
+
 	sd "github.com/caos/zitadel/internal/config/systemdefaults"
 	"github.com/caos/zitadel/internal/config/types"
 	"github.com/caos/zitadel/internal/crypto"
 	"github.com/caos/zitadel/internal/eventstore"
-	"github.com/caos/zitadel/internal/eventstore/query"
+	"github.com/caos/zitadel/internal/eventstore/spooler"
 	"github.com/caos/zitadel/internal/i18n"
 	iam_es "github.com/caos/zitadel/internal/iam/repository/eventsourcing"
 	"github.com/caos/zitadel/internal/notification/repository/eventsourcing/view"
 	org_event "github.com/caos/zitadel/internal/org/repository/eventsourcing"
 	usr_event "github.com/caos/zitadel/internal/user/repository/eventsourcing"
-	"net/http"
-	"time"
 )
 
 type Configs map[string]*Config
@@ -35,12 +37,12 @@ type EventstoreRepos struct {
 	IAMEvents  *iam_es.IAMEventstore
 }
 
-func Register(configs Configs, bulkLimit, errorCount uint64, view *view.View, eventstore eventstore.Eventstore, repos EventstoreRepos, systemDefaults sd.SystemDefaults, i18n *i18n.Translator, dir http.FileSystem) []query.Handler {
+func Register(configs Configs, bulkLimit, errorCount uint64, view *view.View, eventstore eventstore.Eventstore, repos EventstoreRepos, systemDefaults sd.SystemDefaults, i18n *i18n.Translator, dir http.FileSystem) []spooler.Handler {
 	aesCrypto, err := crypto.NewAESCrypto(systemDefaults.UserVerificationKey)
 	if err != nil {
 		logging.Log("HANDL-s90ew").WithError(err).Debug("error create new aes crypto")
 	}
-	return []query.Handler{
+	return []spooler.Handler{
 		&NotifyUser{
 			handler:   handler{view, bulkLimit, configs.cycleDuration("User"), errorCount},
 			orgEvents: repos.OrgEvents,

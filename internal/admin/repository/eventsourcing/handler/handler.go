@@ -4,12 +4,12 @@ import (
 	"time"
 
 	"github.com/caos/zitadel/internal/config/systemdefaults"
+	"github.com/caos/zitadel/internal/eventstore/spooler"
 	iam_event "github.com/caos/zitadel/internal/iam/repository/eventsourcing"
 
 	"github.com/caos/zitadel/internal/admin/repository/eventsourcing/view"
 	"github.com/caos/zitadel/internal/config/types"
 	"github.com/caos/zitadel/internal/eventstore"
-	"github.com/caos/zitadel/internal/eventstore/query"
 	org_event "github.com/caos/zitadel/internal/org/repository/eventsourcing"
 	usr_event "github.com/caos/zitadel/internal/user/repository/eventsourcing"
 )
@@ -33,8 +33,8 @@ type EventstoreRepos struct {
 	OrgEvents  *org_event.OrgEventstore
 }
 
-func Register(configs Configs, bulkLimit, errorCount uint64, view *view.View, eventstore eventstore.Eventstore, repos EventstoreRepos, defaults systemdefaults.SystemDefaults) []query.Handler {
-	return []query.Handler{
+func Register(configs Configs, bulkLimit, errorCount uint64, view *view.View, eventstore eventstore.Eventstore, repos EventstoreRepos, defaults systemdefaults.SystemDefaults) []spooler.Handler {
+	return []spooler.Handler{
 		&Org{handler: handler{view, bulkLimit, configs.cycleDuration("Org"), errorCount}},
 		&IamMember{handler: handler{view, bulkLimit, configs.cycleDuration("IamMember"), errorCount},
 			userEvents: repos.UserEvents},

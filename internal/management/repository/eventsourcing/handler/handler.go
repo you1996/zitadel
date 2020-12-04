@@ -6,7 +6,7 @@ import (
 	"github.com/caos/zitadel/internal/config/systemdefaults"
 	"github.com/caos/zitadel/internal/config/types"
 	"github.com/caos/zitadel/internal/eventstore"
-	"github.com/caos/zitadel/internal/eventstore/query"
+	"github.com/caos/zitadel/internal/eventstore/spooler"
 	iam_event "github.com/caos/zitadel/internal/iam/repository/eventsourcing"
 	"github.com/caos/zitadel/internal/management/repository/eventsourcing/view"
 	org_event "github.com/caos/zitadel/internal/org/repository/eventsourcing"
@@ -34,8 +34,8 @@ type EventstoreRepos struct {
 	IamEvents     *iam_event.IAMEventstore
 }
 
-func Register(configs Configs, bulkLimit, errorCount uint64, view *view.View, eventstore eventstore.Eventstore, repos EventstoreRepos, defaults systemdefaults.SystemDefaults) []query.Handler {
-	return []query.Handler{
+func Register(configs Configs, bulkLimit, errorCount uint64, view *view.View, eventstore eventstore.Eventstore, repos EventstoreRepos, defaults systemdefaults.SystemDefaults) []spooler.Handler {
+	return []spooler.Handler{
 		&Project{handler: handler{view, bulkLimit, configs.cycleDuration("Project"), errorCount},
 			eventstore: eventstore},
 		&ProjectGrant{handler: handler{view, bulkLimit, configs.cycleDuration("ProjectGrant"), errorCount},
