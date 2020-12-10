@@ -60,11 +60,11 @@ type BaseSearchQuery struct {
 	Value  interface{}
 }
 
-func (q *BaseSearchQuery) GetKey() ColumnKey {
+func (q *BaseSearchQuery) ColumnKey() ColumnKey {
 	return q.Key
 }
 
-func (q *BaseSearchQuery) GetMethod() SearchMethod {
+func (q *BaseSearchQuery) SearchMethod() SearchMethod {
 	return q.Method
 }
 func (q *BaseSearchQuery) GetValue() interface{} {
@@ -72,8 +72,8 @@ func (q *BaseSearchQuery) GetValue() interface{} {
 }
 
 type SearchQuery interface {
-	GetKey() ColumnKey
-	GetMethod() SearchMethod
+	ColumnKey() ColumnKey
+	SearchMethod() SearchMethod
 	GetValue() interface{}
 }
 
@@ -95,7 +95,7 @@ func PrepareSearchQuery(table string, request SearchRequest) func(db *gorm.DB, r
 
 		for _, q := range request.GetQueries() {
 			var err error
-			query, err = SetQuery(query, q.GetKey(), q.GetValue(), q.GetMethod())
+			query, err = SetQuery(query, q.ColumnKey(), q.GetValue(), q.SearchMethod())
 			if err != nil {
 				return count, caos_errs.ThrowInvalidArgument(err, "VIEW-KaGue", "query is invalid")
 			}

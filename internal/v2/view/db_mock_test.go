@@ -74,11 +74,11 @@ type TestSearchQuery struct {
 	value  string
 }
 
-func (req TestSearchQuery) GetKey() ColumnKey {
+func (req TestSearchQuery) ColumnKey() ColumnKey {
 	return req.key
 }
 
-func (req TestSearchQuery) GetMethod() SearchMethod {
+func (req TestSearchQuery) SearchMethod() SearchMethod {
 	return req.method
 }
 
