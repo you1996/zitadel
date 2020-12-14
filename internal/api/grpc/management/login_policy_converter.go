@@ -13,6 +13,7 @@ func loginPolicyRequestToModel(policy *management.LoginPolicyRequest) *iam_model
 		AllowExternalIdp:      policy.AllowExternalIdp,
 		AllowRegister:         policy.AllowRegister,
 		ForceMFA:              policy.ForceMfa,
+		PasswordlessType:      passwordlessTypeToModel(policy.PasswordlessType),
 	}
 }
 
@@ -30,6 +31,7 @@ func loginPolicyFromModel(policy *iam_model.LoginPolicy) *management.LoginPolicy
 		CreationDate:          creationDate,
 		ChangeDate:            changeDate,
 		ForceMfa:              policy.ForceMFA,
+		PasswordlessType:      passwordlessTypeFromModel(policy.PasswordlessType),
 	}
 }
 
@@ -48,6 +50,7 @@ func loginPolicyViewFromModel(policy *iam_model.LoginPolicyView) *management.Log
 		CreationDate:          creationDate,
 		ChangeDate:            changeDate,
 		ForceMfa:              policy.ForceMFA,
+		PasswordlessType:      passwordlessTypeFromModel(policy.PasswordlessType),
 	}
 }
 
@@ -69,27 +72,27 @@ func idpProviderSearchResponseFromModel(response *iam_model.IDPProviderSearchRes
 
 func idpProviderToModel(provider *management.IdpProviderID) *iam_model.IDPProvider {
 	return &iam_model.IDPProvider{
-		IdpConfigID: provider.IdpConfigId,
+		IDPConfigID: provider.IdpConfigId,
 		Type:        iam_model.IDPProviderTypeSystem,
 	}
 }
 
 func idpProviderAddToModel(provider *management.IdpProviderAdd) *iam_model.IDPProvider {
 	return &iam_model.IDPProvider{
-		IdpConfigID: provider.IdpConfigId,
+		IDPConfigID: provider.IdpConfigId,
 		Type:        idpProviderTypeToModel(provider.IdpProviderType),
 	}
 }
 
 func idpProviderIDFromModel(provider *iam_model.IDPProvider) *management.IdpProviderID {
 	return &management.IdpProviderID{
-		IdpConfigId: provider.IdpConfigID,
+		IdpConfigId: provider.IDPConfigID,
 	}
 }
 
 func idpProviderFromModel(provider *iam_model.IDPProvider) *management.IdpProvider {
 	return &management.IdpProvider{
-		IdpConfigId:      provider.IdpConfigID,
+		IdpConfigId:      provider.IDPConfigID,
 		IdpProvider_Type: idpProviderTypeFromModel(provider.Type),
 	}
 }
@@ -213,5 +216,23 @@ func multiFactorTypeToModel(mfaType *management.MultiFactor) iam_model.MultiFact
 		return iam_model.MultiFactorTypeU2FWithPIN
 	default:
 		return iam_model.MultiFactorTypeUnspecified
+	}
+}
+
+func passwordlessTypeFromModel(passwordlessType iam_model.PasswordlessType) management.PasswordlessType {
+	switch passwordlessType {
+	case iam_model.PasswordlessTypeAllowed:
+		return management.PasswordlessType_PASSWORDLESSTYPE_ALLOWED
+	default:
+		return management.PasswordlessType_PASSWORDLESSTYPE_NOT_ALLOWED
+	}
+}
+
+func passwordlessTypeToModel(passwordlessType management.PasswordlessType) iam_model.PasswordlessType {
+	switch passwordlessType {
+	case management.PasswordlessType_PASSWORDLESSTYPE_ALLOWED:
+		return iam_model.PasswordlessTypeAllowed
+	default:
+		return iam_model.PasswordlessTypeNotAllowed
 	}
 }

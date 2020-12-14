@@ -52,9 +52,6 @@ const (
 	MFAInitSkipped       models.EventType = "user.mfa.init.skipped"
 
 	SignedOut models.EventType = "user.signed.out"
-
-	DomainClaimed     models.EventType = "user.domain.claimed"
-	DomainClaimedSent models.EventType = "user.domain.claimed.sent"
 )
 
 //the following consts are for user(v2)
@@ -69,6 +66,9 @@ const (
 	UserRemoved     models.EventType = "user.removed"
 
 	UserTokenAdded models.EventType = "user.token.added"
+
+	DomainClaimed     models.EventType = "user.domain.claimed"
+	DomainClaimedSent models.EventType = "user.domain.claimed.sent"
 )
 
 // the following consts are for user(v2).human
@@ -117,6 +117,22 @@ const (
 	HumanMFAOTPCheckSucceeded models.EventType = "user.human.mfa.otp.check.succeeded"
 	HumanMFAOTPCheckFailed    models.EventType = "user.human.mfa.otp.check.failed"
 	HumanMFAInitSkipped       models.EventType = "user.human.mfa.init.skipped"
+
+	HumanMFAU2FTokenAdded            models.EventType = "user.human.mfa.u2f.token.added"
+	HumanMFAU2FTokenVerified         models.EventType = "user.human.mfa.u2f.token.verified"
+	HumanMFAU2FTokenSignCountChanged models.EventType = "user.human.mfa.u2f.token.signcount.changed"
+	HumanMFAU2FTokenRemoved          models.EventType = "user.human.mfa.u2f.token.removed"
+	HumanMFAU2FTokenBeginLogin       models.EventType = "user.human.mfa.u2f.token.begin.login"
+	HumanMFAU2FTokenCheckSucceeded   models.EventType = "user.human.mfa.u2f.token.check.succeeded"
+	HumanMFAU2FTokenCheckFailed      models.EventType = "user.human.mfa.u2f.token.check.failed"
+
+	HumanPasswordlessTokenAdded           models.EventType = "user.human.passwordless.token.added"
+	HumanPasswordlessTokenVerified        models.EventType = "user.human.passwordless.token.verified"
+	HumanPasswordlessTokenChangeSignCount models.EventType = "user.human.passwordless.token.signcount.changed"
+	HumanPasswordlessTokenRemoved         models.EventType = "user.human.passwordless.token.removed"
+	HumanPasswordlessTokenBeginLogin      models.EventType = "user.human.passwordless.token.begin.login"
+	HumanPasswordlessTokenCheckSucceeded  models.EventType = "user.human.passwordless.token.check.succeeded"
+	HumanPasswordlessTokenCheckFailed     models.EventType = "user.human.passwordless.token.check.failed"
 
 	HumanSignedOut models.EventType = "user.human.signed.out"
 )

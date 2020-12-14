@@ -3,9 +3,18 @@ package iam
 import (
 	es_models "github.com/caos/zitadel/internal/eventstore/models"
 	"github.com/caos/zitadel/internal/eventstore/v2"
+	"github.com/caos/zitadel/internal/iam/model"
 	old_iam_model "github.com/caos/zitadel/internal/iam/model"
 	old_iam_view "github.com/caos/zitadel/internal/iam/repository/view/model"
+	"github.com/caos/zitadel/internal/v2/repository/iam"
 	iam_repo "github.com/caos/zitadel/internal/v2/repository/iam"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/label"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/login"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/login/idpprovider"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/org_iam"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/password_age"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/password_complexity"
+	"github.com/caos/zitadel/internal/v2/repository/iam/policy/password_lockout"
 	"github.com/caos/zitadel/internal/v2/repository/idp/oidc"
 	"github.com/caos/zitadel/internal/v2/repository/member"
 	"github.com/caos/zitadel/internal/v2/view"
@@ -44,9 +53,9 @@ func readModelToMembers(readModel *iam_repo.MembersReadModel) []*old_iam_model.I
 	return members
 }
 
-func readModelToLabelPolicy(readModel *iam_repo.LabelPolicyReadModel) *old_iam_model.LabelPolicy {
-	return &old_iam_model.LabelPolicy{
-		ObjectRoot:     readModelToObjectRoot(readModel.ReadModel),
+func readModelToLabelPolicy(readModel *label.ReadModel) *model.LabelPolicy {
+	return &model.LabelPolicy{
+		ObjectRoot:     readModelToObjectRoot(readModel.ReadModel.ReadModel),
 		PrimaryColor:   readModel.PrimaryColor,
 		SecondaryColor: readModel.SecondaryColor,
 		Default:        true,
@@ -54,9 +63,9 @@ func readModelToLabelPolicy(readModel *iam_repo.LabelPolicyReadModel) *old_iam_m
 	}
 }
 
-func readModelToLoginPolicy(readModel *iam_repo.LoginPolicyReadModel) *old_iam_model.LoginPolicy {
-	return &old_iam_model.LoginPolicy{
-		ObjectRoot:            readModelToObjectRoot(readModel.ReadModel),
+func readModelToLoginPolicy(readModel *login.ReadModel) *model.LoginPolicy {
+	return &model.LoginPolicy{
+		ObjectRoot:            readModelToObjectRoot(readModel.ReadModel.ReadModel),
 		AllowExternalIdp:      readModel.AllowExternalIDP,
 		AllowRegister:         readModel.AllowRegister,
 		AllowUsernamePassword: readModel.AllowUserNamePassword,
@@ -65,25 +74,25 @@ func readModelToLoginPolicy(readModel *iam_repo.LoginPolicyReadModel) *old_iam_m
 		//TODO: State: int32,
 	}
 }
-func readModelToOrgIAMPolicy(readModel *iam_repo.OrgIAMPolicyReadModel) *old_iam_model.OrgIAMPolicy {
-	return &old_iam_model.OrgIAMPolicy{
-		ObjectRoot:            readModelToObjectRoot(readModel.ReadModel),
+func readModelToOrgIAMPolicy(readModel *org_iam.ReadModel) *model.OrgIAMPolicy {
+	return &model.OrgIAMPolicy{
+		ObjectRoot:            readModelToObjectRoot(readModel.ReadModel.ReadModel),
 		UserLoginMustBeDomain: readModel.UserLoginMustBeDomain,
 		Default:               true,
 		//TODO: State: int32,
 	}
 }
-func readModelToPasswordAgePolicy(readModel *iam_repo.PasswordAgePolicyReadModel) *old_iam_model.PasswordAgePolicy {
-	return &old_iam_model.PasswordAgePolicy{
-		ObjectRoot:     readModelToObjectRoot(readModel.ReadModel),
+func readModelToPasswordAgePolicy(readModel *password_age.ReadModel) *model.PasswordAgePolicy {
+	return &model.PasswordAgePolicy{
+		ObjectRoot:     readModelToObjectRoot(readModel.ReadModel.ReadModel),
 		ExpireWarnDays: uint64(readModel.ExpireWarnDays),
 		MaxAgeDays:     uint64(readModel.MaxAgeDays),
 		//TODO: State: int32,
 	}
 }
-func readModelToPasswordComplexityPolicy(readModel *iam_repo.PasswordComplexityPolicyReadModel) *old_iam_model.PasswordComplexityPolicy {
-	return &old_iam_model.PasswordComplexityPolicy{
-		ObjectRoot:   readModelToObjectRoot(readModel.ReadModel),
+func readModelToPasswordComplexityPolicy(readModel *password_complexity.ReadModel) *model.PasswordComplexityPolicy {
+	return &model.PasswordComplexityPolicy{
+		ObjectRoot:   readModelToObjectRoot(readModel.ReadModel.ReadModel),
 		HasLowercase: readModel.HasLowercase,
 		HasNumber:    readModel.HasNumber,
 		HasSymbol:    readModel.HasSymbol,
@@ -92,9 +101,9 @@ func readModelToPasswordComplexityPolicy(readModel *iam_repo.PasswordComplexityP
 		//TODO: State: int32,
 	}
 }
-func readModelToPasswordLockoutPolicy(readModel *iam_repo.PasswordLockoutPolicyReadModel) *old_iam_model.PasswordLockoutPolicy {
-	return &old_iam_model.PasswordLockoutPolicy{
-		ObjectRoot:          readModelToObjectRoot(readModel.ReadModel),
+func readModelToPasswordLockoutPolicy(readModel *password_lockout.ReadModel) *model.PasswordLockoutPolicy {
+	return &model.PasswordLockoutPolicy{
+		ObjectRoot:          readModelToObjectRoot(readModel.ReadModel.ReadModel),
 		MaxAttempts:         uint64(readModel.MaxAttempts),
 		ShowLockOutFailures: readModel.ShowLockOutFailures,
 		//TODO: State: int32,
@@ -136,8 +145,61 @@ func writeModelToMember(writeModel *iam_repo.MemberWriteModel) *old_iam_model.IA
 	}
 }
 
-func readModelToIDPConfigView(rm *iam_repo.IDPConfigReadModel) *old_iam_model.IDPConfigView {
-	return &old_iam_model.IDPConfigView{
+func writeModelToLoginPolicy(wm *login.WriteModel) *model.LoginPolicy {
+	return &model.LoginPolicy{
+		ObjectRoot:            writeModelToObjectRoot(wm.WriteModel),
+		AllowUsernamePassword: wm.Policy.AllowUserNamePassword,
+		AllowRegister:         wm.Policy.AllowRegister,
+		AllowExternalIdp:      wm.Policy.AllowExternalIDP,
+		ForceMFA:              wm.Policy.ForceMFA,
+		PasswordlessType:      model.PasswordlessType(wm.Policy.PasswordlessType),
+	}
+}
+
+func writeModelToLabelPolicy(wm *label.WriteModel) *model.LabelPolicy {
+	return &model.LabelPolicy{
+		ObjectRoot:     writeModelToObjectRoot(wm.WriteModel),
+		PrimaryColor:   wm.Policy.PrimaryColor,
+		SecondaryColor: wm.Policy.SecondaryColor,
+	}
+}
+
+func writeModelToOrgIAMPolicy(wm *org_iam.WriteModel) *model.OrgIAMPolicy {
+	return &model.OrgIAMPolicy{
+		ObjectRoot:            writeModelToObjectRoot(wm.WriteModel),
+		UserLoginMustBeDomain: wm.Policy.UserLoginMustBeDomain,
+	}
+}
+
+func writeModelToPasswordAgePolicy(wm *password_age.WriteModel) *model.PasswordAgePolicy {
+	return &model.PasswordAgePolicy{
+		ObjectRoot:     writeModelToObjectRoot(wm.WriteModel),
+		MaxAgeDays:     wm.Policy.MaxAgeDays,
+		ExpireWarnDays: wm.Policy.ExpireWarnDays,
+	}
+}
+
+func writeModelToPasswordComplexityPolicy(wm *password_complexity.WriteModel) *model.PasswordComplexityPolicy {
+	return &model.PasswordComplexityPolicy{
+		ObjectRoot:   writeModelToObjectRoot(wm.WriteModel),
+		MinLength:    wm.Policy.MinLength,
+		HasLowercase: wm.Policy.HasLowercase,
+		HasUppercase: wm.Policy.HasUpperCase,
+		HasNumber:    wm.Policy.HasNumber,
+		HasSymbol:    wm.Policy.HasSymbol,
+	}
+}
+
+func writeModelToPasswordLockoutPolicy(wm *password_lockout.WriteModel) *model.PasswordLockoutPolicy {
+	return &model.PasswordLockoutPolicy{
+		ObjectRoot:          writeModelToObjectRoot(wm.WriteModel),
+		MaxAttempts:         wm.Policy.MaxAttempts,
+		ShowLockOutFailures: wm.Policy.ShowLockOutFailures,
+	}
+}
+
+func readModelToIDPConfigView(rm *iam.IDPConfigReadModel) *model.IDPConfigView {
+	return &model.IDPConfigView{
 		AggregateID:               rm.AggregateID,
 		ChangeDate:                rm.ChangeDate,
 		CreationDate:              rm.CreationDate,
@@ -213,14 +275,6 @@ func writeModelToIDPOIDCConfig(wm *oidc.ConfigWriteModel) *old_iam_model.OIDCIDP
 	}
 }
 
-func writeModelToIDPProvider(wm *iam_repo.LoginPolicyIDPProviderWriteModel) *old_iam_model.IDPProvider {
-	return &old_iam_model.IDPProvider{
-		ObjectRoot:  writeModelToObjectRoot(wm.WriteModel),
-		IdpConfigID: wm.IDPConfigID,
-		Type:        old_iam_model.IDPProviderType(wm.IDPProviderType),
-	}
-}
-
 func memberSearchRequestFromIAMMemberSearchRequest(request *old_iam_model.IAMMemberSearchRequest) *iam_view.MemberSearchRequest {
 	r := iam_view.NewMemberSearchRequest(request.Limit, request.Offset, request.Asc).
 		SortBy(iam_view.MemberSearchKey(request.SortingColumn))
@@ -252,5 +306,13 @@ func memberViewToIAMMemberView(m *iam_view.MemberView) *old_iam_view.IAMMemberVi
 		CreationDate: m.CreationDate,
 		ChangeDate:   m.ChangeDate,
 		Sequence:     m.ProcessedSequence,
+	}
+}
+
+func writeModelToIDPProvider(wm *idpprovider.WriteModel) *model.IDPProvider {
+	return &model.IDPProvider{
+		ObjectRoot:  writeModelToObjectRoot(wm.WriteModel),
+		IDPConfigID: wm.Provider.IDPConfigID,
+		Type:        model.IDPProviderType(wm.Provider.IDPProviderType),
 	}
 }

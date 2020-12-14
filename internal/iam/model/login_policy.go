@@ -16,12 +16,13 @@ type LoginPolicy struct {
 	ForceMFA              bool
 	SecondFactors         []SecondFactorType
 	MultiFactors          []MultiFactorType
+	PasswordlessType      PasswordlessType
 }
 
 type IDPProvider struct {
 	models.ObjectRoot
 	Type        IDPProviderType
-	IdpConfigID string
+	IDPConfigID string
 }
 
 type PolicyState int32
@@ -53,17 +54,24 @@ const (
 	MultiFactorTypeU2FWithPIN
 )
 
+type PasswordlessType int32
+
+const (
+	PasswordlessTypeNotAllowed PasswordlessType = iota
+	PasswordlessTypeAllowed
+)
+
 func (p *LoginPolicy) IsValid() bool {
 	return p.ObjectRoot.AggregateID != ""
 }
 
 func (p *IDPProvider) IsValid() bool {
-	return p.ObjectRoot.AggregateID != "" && p.IdpConfigID != ""
+	return p.ObjectRoot.AggregateID != "" && p.IDPConfigID != ""
 }
 
 func (p *LoginPolicy) GetIdpProvider(id string) (int, *IDPProvider) {
 	for i, m := range p.IDPProviders {
-		if m.IdpConfigID == id {
+		if m.IDPConfigID == id {
 			return i, m
 		}
 	}
