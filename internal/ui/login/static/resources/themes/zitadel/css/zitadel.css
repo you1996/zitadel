@@ -1,4 +1,5 @@
 @charset "UTF-8";
+/* Colors for the ripple elements.*/
 footer {
   width: 100%;
   box-sizing: border-box;
@@ -651,6 +652,26 @@ label, .lgn-label, .lgn-typography .lgn-label, .lgn-typography label {
   margin: 0 0 64px;
 }
 
+.lgn-ripple {
+  overflow: hidden;
+  position: relative;
+}
+.lgn-ripple:not(:empty) {
+  transform: translateZ(0);
+}
+
+.lgn-ripple.lgn-ripple-unbounded {
+  overflow: visible;
+}
+
+.lgn-ripple-element {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  transition: opacity, transform 0ms cubic-bezier(0, 0, 0.2, 1);
+  transform: scale(0);
+}
+
 .lgn-app-background {
   background-color: #212224;
   color: white;
@@ -759,6 +780,15 @@ label, .lgn-label, .lgn-typography .lgn-label, .lgn-typography label {
 .lgn-raised-button.lgn-primary[disabled], .lgn-raised-button.lgn-accent[disabled], .lgn-raised-button.lgn-warn[disabled], .lgn-raised-button[disabled][disabled] {
   background-color: rgba(255, 255, 255, 0.12);
 }
+.lgn-raised-button.lgn-primary .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.lgn-raised-button.lgn-accent .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.lgn-raised-button.lgn-warn .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 .lgn-raised-button:active {
   background-color: rgba(82, 130, 193, 0.8);
 }
@@ -766,6 +796,14 @@ label, .lgn-label, .lgn-typography .lgn-label, .lgn-typography label {
 .lgn-button,
 .lgn-stroked-button {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+}
+.lgn-button .lng-button-ripple.lgn-ripple, .lgn-button .lgn-button-focus-overlay,
+.lgn-stroked-button .lng-button-ripple.lgn-ripple,
+.lgn-stroked-button .lgn-button-focus-overlay {
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
 }
 
 .lgn-raised-button {
@@ -1065,12 +1103,29 @@ ul li i.lgn-valid {
 .lgn-dark-theme .lgn-raised-button.lgn-primary[disabled], .lgn-dark-theme .lgn-raised-button.lgn-accent[disabled], .lgn-dark-theme .lgn-raised-button.lgn-warn[disabled], .lgn-dark-theme .lgn-raised-button[disabled][disabled] {
   background-color: rgba(255, 255, 255, 0.12);
 }
+.lgn-dark-theme .lgn-raised-button.lgn-primary .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.lgn-dark-theme .lgn-raised-button.lgn-accent .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.lgn-dark-theme .lgn-raised-button.lgn-warn .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 .lgn-dark-theme .lgn-raised-button:active {
   background-color: rgba(82, 130, 193, 0.8);
 }
 .lgn-dark-theme .lgn-button,
 .lgn-dark-theme .lgn-stroked-button {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+}
+.lgn-dark-theme .lgn-button .lng-button-ripple.lgn-ripple, .lgn-dark-theme .lgn-button .lgn-button-focus-overlay,
+.lgn-dark-theme .lgn-stroked-button .lng-button-ripple.lgn-ripple,
+.lgn-dark-theme .lgn-stroked-button .lgn-button-focus-overlay {
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
 }
 .lgn-dark-theme .lgn-raised-button {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -1349,12 +1404,29 @@ ul li i.lgn-valid {
 .lgn-light-theme .lgn-raised-button.lgn-primary[disabled], .lgn-light-theme .lgn-raised-button.lgn-accent[disabled], .lgn-light-theme .lgn-raised-button.lgn-warn[disabled], .lgn-light-theme .lgn-raised-button[disabled][disabled] {
   background-color: rgba(0, 0, 0, 0.12);
 }
+.lgn-light-theme .lgn-raised-button.lgn-primary .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.lgn-light-theme .lgn-raised-button.lgn-accent .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.lgn-light-theme .lgn-raised-button.lgn-warn .lgn-ripple-element {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 .lgn-light-theme .lgn-raised-button:active {
   background-color: rgba(84, 105, 212, 0.8);
 }
 .lgn-light-theme .lgn-button,
 .lgn-light-theme .lgn-stroked-button {
   box-shadow: 0px 0px 0px 0px rgba(0, 0, 0, 0.2), 0px 0px 0px 0px rgba(0, 0, 0, 0.14), 0px 0px 0px 0px rgba(0, 0, 0, 0.12);
+}
+.lgn-light-theme .lgn-button .lng-button-ripple.lgn-ripple, .lgn-light-theme .lgn-button .lgn-button-focus-overlay,
+.lgn-light-theme .lgn-stroked-button .lng-button-ripple.lgn-ripple,
+.lgn-light-theme .lgn-stroked-button .lgn-button-focus-overlay {
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
 }
 .lgn-light-theme .lgn-raised-button {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);

@@ -1,6 +1,8 @@
-  
+@import '../ripple/ripple';
+
   @mixin lgn-core($typography-config: null) {
     @include zitadel-lgn-typography($typography-config);
+    @include lgn-ripple();
   }
   
   @mixin lgn-core-color($config-or-theme) {

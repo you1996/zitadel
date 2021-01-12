@@ -1,0 +1,52 @@
+@import '../theming/theming';
+// @import '../../../cdk/a11y/a11y';
+
+$lgn-ripple-color-opacity: 0.1;
+
+@mixin lgn-ripple-theme($theme-or-color-config) {
+    $theme: lgn-private-legacy-get-theme($theme-or-color-config);
+      $color: lgn-get-color-config($theme);
+      @if $color != null {
+        @include lgn-ripple-color($color);
+      }
+  }
+  
+
+@mixin lgn-ripple() {
+  .lgn-ripple {
+    overflow: hidden;
+    position: relative;
+    &:not(:empty) {
+      transform: translateZ(0);
+    }
+  }
+
+  .lgn-ripple.lgn-ripple-unbounded {
+    overflow: visible;
+  }
+
+  .lgn-ripple-element {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+
+    transition: opacity, transform 0ms cubic-bezier(0, 0, 0.2, 1);
+    transform: scale(0);
+  }
+}
+
+@mixin lgn-ripple-color($config-or-theme) {
+  $config: lgn-get-color-config($config-or-theme);
+  $foreground: map-get($config, foreground);
+  $foreground-base: map-get($foreground, base);
+
+  .lgn-ripple-element {
+    @if (type-of($foreground-base) == color) {
+      background-color: rgba($foreground-base, $lgn-ripple-color-opacity);
+    }
+    @else {
+      background-color: $foreground-base;
+      opacity: $lgn-ripple-color-opacity;
+    }
+  }
+}
