@@ -973,23 +973,56 @@ enum IdpSearchKey {
     IDPSEARCHKEY_NAME = 2;
 }
 
+enum IconFont {
+    DEFAULT = 0;
+}
+
+enum Font {
+    FONT_LATO = 0;
+    FONT_ROBOTO = 1;
+    FONT_FRAUNCES = 2;
+    FONT_PT_SANS = 3;
+    FONT_ZILLA_SLAB = 4;
+    FONT_BARLOW_CONDENSED = 5;
+}
+
 message DefaultLabelPolicy {
     string primary_color = 1;
     string secondary_color = 2;
-    google.protobuf.Timestamp creation_date = 3;
-    google.protobuf.Timestamp change_date = 4;
+    string warn_color = 3;
+    bool border = 4;
+    Font font = 5;
+    IconFont icon_font = 6;
+    bytes Logo = 7;
+
+    google.protobuf.Timestamp creation_date = 8;
+    google.protobuf.Timestamp change_date = 9;
 }
 
 message DefaultLabelPolicyUpdate {
     string primary_color = 1;
     string secondary_color = 2;
+    string warn_color = 3;
+    bool border = 4;
+    Font font = 5;
+    IconFont icon_font = 6;
+    bytes Logo = 7;
+
+    google.protobuf.Timestamp creation_date = 8;
+    google.protobuf.Timestamp change_date = 9;
 }
 
 message DefaultLabelPolicyView {
     string primary_color = 1;
     string secondary_color = 2;
-    google.protobuf.Timestamp creation_date = 3;
-    google.protobuf.Timestamp change_date = 4;
+    string warn_color = 3;
+    bool border = 4;
+    Font font = 5;
+    IconFont icon_font = 6;
+    bytes Logo = 7;
+
+    google.protobuf.Timestamp creation_date = 8;
+    google.protobuf.Timestamp change_date = 9;
 }
 
 message DefaultLoginPolicy {

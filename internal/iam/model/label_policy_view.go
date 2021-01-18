@@ -10,12 +10,30 @@ type LabelPolicyView struct {
 	AggregateID    string
 	PrimaryColor   string
 	SecondaryColor string
+	WarnColor	   string
+	Logo 		   []byte
+	Border		   bool
+	IconFont	   IconFont
+	Font	       Font  
 	Default        bool
 
 	CreationDate time.Time
 	ChangeDate   time.Time
 	Sequence     uint64
 }
+
+type IconFont int32
+const (
+	IconFontDefault IconFont = iota
+	IconFontLine
+)
+
+type Font int32
+const (
+	FontDefault Font = iota
+	FontLATO
+)
+
 
 type LabelPolicySearchRequest struct {
 	Offset        uint64

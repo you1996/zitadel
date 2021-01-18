@@ -26,6 +26,11 @@ type LabelPolicyView struct {
 
 	PrimaryColor   string `json:"primaryColor" gorm:"column:primary_color"`
 	SecondaryColor string `json:"secondaryColor" gorm:"column:secondary_color"`
+	WarnColor	   string `json:"warnColor" gorm:"column:warn_color"`
+	Border		   bool   `json:"border" gorm:"column:border"`
+	Font           int32  `json:"font" gorm:"column:font"`
+	IconFont       int32  `json:"iconFont" gorm:"column:iconFont"`
+	Logo           []byte `json:"logo,omitempty" gorm:"column:logo"`
 	Default        bool   `json:"-" gorm:"-"`
 
 	Sequence uint64 `json:"-" gorm:"column:sequence"`
@@ -39,6 +44,11 @@ func LabelPolicyViewFromModel(policy *model.LabelPolicyView) *LabelPolicyView {
 		ChangeDate:     policy.ChangeDate,
 		PrimaryColor:   policy.PrimaryColor,
 		SecondaryColor: policy.SecondaryColor,
+		WarnColor: 		policy.WarnColor,
+		Logo:			policy.Logo,
+		Border: 		policy.Border,
+		Font: 			int32(policy.Font),
+		IconFont: 		int32(policy.IconFont),
 		Default:        policy.Default,
 	}
 }
@@ -51,6 +61,10 @@ func LabelPolicyViewToModel(policy *LabelPolicyView) *model.LabelPolicyView {
 		ChangeDate:     policy.ChangeDate,
 		PrimaryColor:   policy.PrimaryColor,
 		SecondaryColor: policy.SecondaryColor,
+		WarnColor: 		policy.WarnColor,
+		Border: 		policy.Border,
+		Font: 			model.Font(policy.Font),
+		IconFont: 		model.IconFont(policy.IconFont),
 		Default:        policy.Default,
 	}
 }
