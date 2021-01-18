@@ -14,6 +14,11 @@ type LabelPolicy struct {
 	State          int32  `json:"-"`
 	PrimaryColor   string `json:"primaryColor"`
 	SecondaryColor string `json:"secondaryColor"`
+	WarnColor	   string `json:"warnColor"`
+	Logo 		   []byte `json:"logo"`
+	Border         bool   `json:"border"`
+	Font           int32  `json:"font"`
+	IconFont       int32  `json:"iconFont"`      
 }
 
 func LabelPolicyToModel(policy *LabelPolicy) *iam_model.LabelPolicy {
@@ -42,6 +47,18 @@ func (p *LabelPolicy) Changes(changed *LabelPolicy) map[string]interface{} {
 	}
 	if changed.SecondaryColor != p.SecondaryColor {
 		changes["secondaryColor"] = changed.SecondaryColor
+	}
+	if changed.WarnColor != p.WarnColor {
+		changes["warnColor"] = changed.WarnColor
+	}
+	if changed.Border != p.Border {
+		changes["border"] = changed.Border
+	}
+	if changed.Font != p.Font {
+		changes["font"] = changed.Font
+	}
+	if changed.IconFont != p.IconFont {
+		changes["iconFont"] = changed.IconFont
 	}
 
 	return changes

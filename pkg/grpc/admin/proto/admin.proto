@@ -984,6 +984,7 @@ enum Font {
     FONT_PT_SANS = 3;
     FONT_ZILLA_SLAB = 4;
     FONT_BARLOW_CONDENSED = 5;
+    FONT_RALEWAY = 6;
 }
 
 message DefaultLabelPolicy {
