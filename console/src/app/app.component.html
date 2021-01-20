@@ -37,8 +37,8 @@
                     </button>
                 </div>
 
-                <button class="show-all" mat-menu-item
-                    [routerLink]="[ '/org/overview' ]">{{'MENU.SHOWORGS' | translate}}</button>
+                <button class="show-all" mat-menu-item [routerLink]="[ '/org/overview' ]">{{'MENU.SHOWORGS' |
+                    translate}}</button>
 
                 <ng-template appHasRole [appHasRole]="['org.create','iam.write']">
                     <button mat-menu-item [routerLink]="[ '/org/create' ]">
@@ -49,8 +49,8 @@
             </mat-menu>
             <span class="fill-space"></span>
 
-            <a class="doc-link" href="https://docs.zitadel.ch" mat-stroked-button
-                target="_blank">{{'MENU.DOCUMENTATION' | translate}}</a>
+            <a class="doc-link" href="https://docs.zitadel.ch" mat-stroked-button target="_blank">{{'MENU.DOCUMENTATION'
+                | translate}}</a>
             <div (clickOutside)="closeAccountCard()" class="icon-container">
                 <app-avatar *ngIf="user && (user.displayName || (user.firstName && user.lastName))"
                     class="avatar dontcloseonclick" (click)="showAccount = !showAccount" [active]="showAccount"
@@ -66,6 +66,7 @@
                 [opened]="!(isHandset$ | async)">
                 <div class="side-column">
                     <div class="list">
+                        <cnsl-add-button>Start</cnsl-add-button>
                         <ng-container *ngIf="authenticationService.authenticationChanged | async">
                             <a @navitem matTooltip="{{'MENU.TOOLTIP.PERSONAL' | translate}}" class="nav-item"
                                 [routerLinkActive]="['active']" [routerLinkActiveOptions]="{ exact: true }"

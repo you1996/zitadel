@@ -23,6 +23,7 @@ import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AuthConfig, OAuthModule, OAuthStorage } from 'angular-oauth2-oidc';
 import { QuicklinkModule } from 'ngx-quicklink';
+import { AddButtonModule } from 'src/app/modules/add-button/add-button.module';
 import { RegExpPipeModule } from 'src/app/pipes/regexp-pipe/regexp-pipe.module';
 
 import { environment } from '../environments/environment';
@@ -104,6 +105,7 @@ const authConfig: AuthConfig = {
         BrowserAnimationsModule,
         HttpClientModule,
         MatButtonModule,
+        AddButtonModule,
         MatIconModule,
         MatTooltipModule,
         MatSidenavModule,
