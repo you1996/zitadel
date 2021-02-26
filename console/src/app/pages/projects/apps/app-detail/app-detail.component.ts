@@ -12,18 +12,8 @@ import { take } from 'rxjs/operators';
 import { RadioItemAuthType } from 'src/app/modules/app-radio/app-auth-method-radio/app-auth-method-radio.component';
 import { ChangeType } from 'src/app/modules/changes/changes.component';
 import { WarnDialogComponent } from 'src/app/modules/warn-dialog/warn-dialog.component';
-import {
-    Application,
-    AppState,
-    OIDCApplicationType,
-    OIDCAuthMethodType,
-    OIDCConfig,
-    OIDCConfigUpdate,
-    OIDCGrantType,
-    OIDCResponseType,
-    OIDCTokenType,
-    ZitadelDocs,
-} from 'src/app/proto/generated/management_pb';
+import { Application, AppState, OIDCApplicationType, OIDCAuthMethodType, OIDCGrantType, OIDCResponseType, OIDCTokenType, ZitadelDocs } from 'src/app/proto/generated/management_pb';
+import { App, OIDCAppType, OIDCConfig } from 'src/app/proto/generated/zitadel/app_pb';
 import { GrpcAuthService } from 'src/app/services/grpc-auth.service';
 import { ManagementService } from 'src/app/services/mgmt.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -53,7 +43,7 @@ export class AppDetailComponent implements OnInit, OnDestroy {
     ];
     private subscription?: Subscription;
     public projectId: string = '';
-    public app!: Application.AsObject;
+    public app!: App.AsObject;
     public oidcResponseTypes: OIDCResponseType[] = [
         OIDCResponseType.OIDCRESPONSETYPE_CODE,
         OIDCResponseType.OIDCRESPONSETYPE_ID_TOKEN,
@@ -140,82 +130,85 @@ export class AppDetailComponent implements OnInit, OnDestroy {
 
     private async getData({ projectid, id }: Params): Promise<void> {
         this.projectId = projectid;
-        this.mgmtService.GetIam().then(iam => {
+        this.mgmtService.getIAM().then(iam => {
             this.isZitadel = iam.toObject().iamProjectId === this.projectId;
         });
         this.authService.isAllowed(['project.app.write$', 'project.app.write:' + projectid]).pipe(take(1)).subscribe((allowed) => {
             this.canWrite = allowed;
-            this.mgmtService.GetApplicationById(projectid, id).then(app => {
-                this.app = app.toObject();
-                this.appNameForm.patchValue(this.app);
+            this.mgmtService.getAppByID(projectid, id).then(app => {
 
-                this.getAuthMethodOptions();
-                if (this.app.oidcConfig) {
-                    this.initialAuthMethod = this.authMethodFromPartialConfig(this.app.oidcConfig);
-                    this.currentAuthMethod = this.initialAuthMethod;
-                    if (this.initialAuthMethod === CUSTOM_METHOD.key) {
-                        if (!this.authMethods.includes(CUSTOM_METHOD)) {
-                            this.authMethods.push(CUSTOM_METHOD);
+                if (app) {
+                    this.app = app;
+                    this.appNameForm.patchValue(this.app);
+
+                    this.getAuthMethodOptions();
+                    if (this.app.oidcConfig) {
+                        this.initialAuthMethod = this.authMethodFromPartialConfig(this.app.oidcConfig);
+                        this.currentAuthMethod = this.initialAuthMethod;
+                        if (this.initialAuthMethod === CUSTOM_METHOD.key) {
+                            if (!this.authMethods.includes(CUSTOM_METHOD)) {
+                                this.authMethods.push(CUSTOM_METHOD);
+                            }
+                        } else {
+                            this.authMethods = this.authMethods.filter(element => element != CUSTOM_METHOD);
                         }
-                    } else {
-                        this.authMethods = this.authMethods.filter(element => element != CUSTOM_METHOD);
                     }
-                }
 
-                if (allowed) {
-                    this.appNameForm.enable();
-                    this.appForm.enable();
-                }
+                    if (allowed) {
+                        this.appNameForm.enable();
+                        this.appForm.enable();
+                    }
 
-                if (this.app.oidcConfig?.redirectUrisList) {
-                    this.redirectUrisList = this.app.oidcConfig.redirectUrisList;
-                }
-                if (this.app.oidcConfig?.postLogoutRedirectUrisList) {
-                    this.postLogoutRedirectUrisList = this.app.oidcConfig.postLogoutRedirectUrisList;
-                }
-                if (this.app.oidcConfig?.clockSkew) {
-                    const inSecs = this.app.oidcConfig?.clockSkew.seconds + this.app.oidcConfig?.clockSkew.nanos / 100000;
-                    this.appForm.controls['clockSkewSeconds'].setValue(inSecs);
-                }
-                if (this.app.oidcConfig) {
-                    this.appForm.patchValue(this.app.oidcConfig);
-                }
+                    if (this.app.oidcConfig?.redirectUrisList) {
+                        this.redirectUrisList = this.app.oidcConfig.redirectUrisList;
+                    }
+                    if (this.app.oidcConfig?.postLogoutRedirectUrisList) {
+                        this.postLogoutRedirectUrisList = this.app.oidcConfig.postLogoutRedirectUrisList;
+                    }
+                    if (this.app.oidcConfig?.clockSkew) {
+                        const inSecs = this.app.oidcConfig?.clockSkew.seconds + this.app.oidcConfig?.clockSkew.nanos / 100000;
+                        this.appForm.controls['clockSkewSeconds'].setValue(inSecs);
+                    }
+                    if (this.app.oidcConfig) {
+                        this.appForm.patchValue(this.app.oidcConfig);
+                    }
 
-                this.appForm.valueChanges.subscribe(oidcConfig => {
-                    this.initialAuthMethod = this.authMethodFromPartialConfig(oidcConfig);
-                    if (this.initialAuthMethod === CUSTOM_METHOD.key) {
-                        if (!this.authMethods.includes(CUSTOM_METHOD)) {
-                            this.authMethods.push(CUSTOM_METHOD);
+                    this.appForm.valueChanges.subscribe(oidcConfig => {
+                        this.initialAuthMethod = this.authMethodFromPartialConfig(oidcConfig);
+                        if (this.initialAuthMethod === CUSTOM_METHOD.key) {
+                            if (!this.authMethods.includes(CUSTOM_METHOD)) {
+                                this.authMethods.push(CUSTOM_METHOD);
+                            }
+                        } else {
+                            this.authMethods = this.authMethods.filter(element => element != CUSTOM_METHOD);
                         }
-                    } else {
-                        this.authMethods = this.authMethods.filter(element => element != CUSTOM_METHOD);
-                    }
-                });
+                    });
+                }
             }).catch(error => {
                 console.error(error);
                 this.toast.showError(error);
                 this.errorMessage = error.message;
             });
         });
-        this.docs = (await this.mgmtService.GetZitadelDocs()).toObject();
+        this.docs = (await this.mgmtService.getOIDCInformation()).toObject();
     }
 
     private getAuthMethodOptions(): void {
         switch (this.app.oidcConfig?.applicationType) {
-            case OIDCApplicationType.OIDCAPPLICATIONTYPE_NATIVE:
+            case OIDCAppType.OIDC_APPLICATION_TYPE_NATIVE:
                 this.authMethods = [
                     PKCE_METHOD,
                     CUSTOM_METHOD,
                 ];
                 break;
-            case OIDCApplicationType.OIDCAPPLICATIONTYPE_WEB:
+            case OIDCAppType.OIDC_APPLICATION_TYPE_WEB:
                 this.authMethods = [
                     PKCE_METHOD,
                     CODE_METHOD,
                     POST_METHOD,
                 ];
                 break;
-            case OIDCApplicationType.OIDCAPPLICATIONTYPE_USER_AGENT:
+            case OIDCAppType.OIDC_APPLICATION_TYPE_USER_AGENT:
                 this.authMethods = [
                     PKCE_METHOD,
                     IMPLICIT_METHOD,
