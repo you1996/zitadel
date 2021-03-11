@@ -36,10 +36,8 @@ jobs:
         run: |
           export BRANCH=${GITHUB_REF#refs/*/}
           echo "branch: ${BRANCH}"
-
           export BRANCHTRANSLATED=$(echo ${BRANCH} | tr '/' '_')
           echo "short_ref: ${BRANCHTRANSLATED}"
-
           export VERSION=""
           if ${{ steps.semantic.outputs.new_release_published == 'true' }}; then
             export VERSION=${{ steps.semantic.outputs.new_release_version }}
@@ -48,11 +46,9 @@ jobs:
           fi
           echo "New semantic release: ${{ steps.semantic.outputs.new_release_published }}"
           echo "version: ${VERSION}"
-
           echo "::set-output name=short_ref::${BRANCHTRANSLATED}"
           echo "::set-output name=sha_short::SHA-$(git rev-parse --short=12 HEAD)"
           echo "::set-output name=version::${VERSION}"
-
   zitadel-image:
     needs: refs
     runs-on: ubuntu-18.04
@@ -92,7 +88,7 @@ jobs:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
     strategy:
       matrix:
-        goos: [ 'Linux', 'Darwin', 'Windows' ]
+        goos: [ 'linux', 'darwin', 'windows' ]
         goarch: [ 'amd64' ]
     steps:
       - name: Source checkout
@@ -137,7 +133,7 @@ jobs:
           name: zitadelctl-${{ matrix.goos }}-${{ matrix.goarch }}
           path: /tmp/operator/zitadelctl-${{ matrix.goos }}-${{ matrix.goarch }}
       - uses: docker/build-push-action@v2
-        if: ${{ matrix.goos == 'Linux' && matrix.goarch == 'amd64' }}
+        if: ${{ matrix.goos == 'linux' && matrix.goarch == 'amd64' }}
         name: buildandpush
         with:
           context: .
@@ -151,8 +147,6 @@ jobs:
             OS=${{ matrix.goos }}
             ARCH=${{ matrix.goarch }}
             VERSION=${{ needs.refs.outputs.version }}
-
-
   crdb-image:
     needs: refs
     runs-on: ubuntu-18.04
@@ -210,9 +204,8 @@ jobs:
           path: ${{ env.ARTIFACTS_FOLDER }}/
       - name: Workaround for exe
         run: |
-          mv ${ARTIFACTS_FOLDER}/zitadelctl-Windows-amd64/zitadelctl-Windows-amd64 ${ARTIFACTS_FOLDER}/zitadelctl-Windows-amd64/zitadelctl-Windows-amd64.exe
+          mv ${ARTIFACTS_FOLDER}/zitadelctl-windows-amd64/zitadelctl-windows-amd64 ${ARTIFACTS_FOLDER}/zitadelctl-windows-amd64/zitadelctl-windows-amd64.exe
           find ${ARTIFACTS_FOLDER}
-
       - name: Semantic Release
         id: semantic
         uses: cycjimmy/semantic-release-action@v2
@@ -278,6 +271,6 @@ jobs:
             This is a release from a development branch.
             Do not use these artifacts in production.
           files: |
-            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-Darwin-amd64/zitadelctl-Darwin-amd64
-            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-Dinux-amd64/zitadelctl-Linux-amd64
-            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-Windows-amd64/zitadelctl-Windows-amd64.exe
+            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-darwin-amd64/zitadelctl-darwin-amd64
+            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-linux-amd64/zitadelctl-linux-amd64
+            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-windows-amd64/zitadelctl-windows-amd64.exe
