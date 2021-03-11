@@ -92,7 +92,7 @@ jobs:
     name: Build ${{ matrix.goos }}-${{ matrix.goarch }}
     strategy:
       matrix:
-        goos: [ 'linux', 'darwin', 'windows' ]
+        goos: [ 'Linux', 'Darwin', 'Windows' ]
         goarch: [ 'amd64' ]
     steps:
       - name: Source checkout
@@ -137,7 +137,7 @@ jobs:
           name: zitadelctl-${{ matrix.goos }}-${{ matrix.goarch }}
           path: /tmp/operator/zitadelctl-${{ matrix.goos }}-${{ matrix.goarch }}
       - uses: docker/build-push-action@v2
-        if: ${{ matrix.goos == 'linux' && matrix.goarch == 'amd64' }}
+        if: ${{ matrix.goos == 'Linux' && matrix.goarch == 'amd64' }}
         name: buildandpush
         with:
           context: .
@@ -210,7 +210,7 @@ jobs:
           path: ${{ env.ARTIFACTS_FOLDER }}/
       - name: Workaround for exe
         run: |
-          mv ${ARTIFACTS_FOLDER}/zitadelctl-windows-amd64/zitadelctl-windows-amd64 ${ARTIFACTS_FOLDER}/zitadelctl-windows-amd64/zitadelctl-windows-amd64.exe
+          mv ${ARTIFACTS_FOLDER}/zitadelctl-Windows-amd64/zitadelctl-Windows-amd64 ${ARTIFACTS_FOLDER}/zitadelctl-Windows-amd64/zitadelctl-Windows-amd64.exe
           find ${ARTIFACTS_FOLDER}
 
       - name: Semantic Release
@@ -278,6 +278,6 @@ jobs:
             This is a release from a development branch.
             Do not use these artifacts in production.
           files: |
-            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-darwin-amd64/zitadelctl-darwin-amd64
-            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-linux-amd64/zitadelctl-linux-amd64
-            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-windows-amd64/zitadelctl-windows-amd64.exe
+            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-Darwin-amd64/zitadelctl-Darwin-amd64
+            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-Dinux-amd64/zitadelctl-Linux-amd64
+            ${{ env.ARTIFACTS_FOLDER }}/zitadelctl-Windows-amd64/zitadelctl-Windows-amd64.exe
