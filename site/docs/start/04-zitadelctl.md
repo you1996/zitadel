@@ -23,6 +23,19 @@ chmod u+x zitadelctl
 `
 
 
+create ssh keypair and use deploykey in git repository (write access)
+create .zitadelfile with private key + $(random) encryption key
+
+test connectivity
+
+
+create database.yaml
+
+
+
+local kubeconfig needs to be set when takeoff --kubeconfig ~/hereiam 
+
+(when use of gke, use adminrolebinding)
 
 
 
