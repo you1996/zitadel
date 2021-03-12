@@ -33,7 +33,7 @@ All applications within a project share the same roles, grants, and authorizatio
 
 <div class="zitadel-gallery" itemscope itemtype="http://schema.org/ImageGallery">
     <figure itemprop="associatedMedia" itemscope itemtype="http://schema.org/ImageObject">
-        <a href="img/console_project_overview.png" itemprop="contentUrl" data-size="1920x1080">
+        <a href="img/console_projects_overview.png" itemprop="contentUrl" data-size="1920x1080">
             <img src="img/console_projects_overview.png" itemprop="thumbnail" alt="console_projects_overview.png" />
         </a>
         <figcaption itemprop="caption description">Organization Grant</figcaption>
